@@ -9974,19 +9974,29 @@ $db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f76613
 
 ob_start();
 
+$i = 0;
 foreach ($isbnlist as $k => $v) {
   $sql = "select id,name,isbn from books where isbn = '{$v}' and publisher_id = 77;";
   foreach ($db->query($sql) as $row) {
     echo $row['isbn'];
-    echo "\t";
+    echo "||"; // 後で置換用の区切り文字
     echo $row['id'];
-    echo "\t";
+    echo "||"; // 後で置換用の区切り文字
     echo $row['name'];
   }
+
   echo "<br>";
-  flush();
-  ob_flush();
+  $i++;
+  if($i > 100) {
+    // 100回まわったら ページ出力
+    flush();
+    ob_flush();
+    $i = 0;
+  }
 }
+flush();
+ob_flush();
+
 ob_end_flush();
 
 echo "end!!";
