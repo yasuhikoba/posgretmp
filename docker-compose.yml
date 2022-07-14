@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  # PHP + Apache
+  php:
+    build: ./__docker/php
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "80:80"
+
+  # PostgreSQL
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: sampledb
+      POSTGRES_USER: sample-user
+      POSTGRES_PASSWORD: hi2mi4i6
+    volumes:
+      - "./__docker/db:/docker-entrypoint-initdb.d"
+    ports:
+      - "5432:5432"
