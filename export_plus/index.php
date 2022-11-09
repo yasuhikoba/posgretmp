@@ -1,16 +1,22 @@
 <?php
-// STG用
-$dsn = 'pgsql:dbname=dbeu4230n0kuct;host=ec2-100-26-113-127.compute-1.amazonaws.com;port=5432';
-$db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f766137b9b58d6c13109c3a1dff39');
-
-// // 本番用
-// $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-233-148-141.compute-1.amazonaws.com;port=5432';
-// $db = new PDO($dsn, 'u43nqlr506q4qg', 'pd20127aa81443c772b163cc2eb6c9960b8735bb9a29528e868c86af98c8ed8ed');
 
 ob_start();
 
 $publisher_id = 5;
 $publisher_key = 'sho-cr'; // ファイル名で使用
+$debug = true;
+
+if($debut) {
+  // STG用
+  $dsn = 'pgsql:dbname=dbeu4230n0kuct;host=ec2-100-26-113-127.compute-1.amazonaws.com;port=5432';
+  $db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f766137b9b58d6c13109c3a1dff39');
+  $publisher_key .= '-stg';
+} else {
+  // 本番用
+  $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-233-148-141.compute-1.amazonaws.com;port=5432';
+  $db = new PDO($dsn, 'u43nqlr506q4qg', 'pd20127aa81443c772b163cc2eb6c9960b8735bb9a29528e868c86af98c8ed8ed');
+  $publisher_key .= '-pro';
+}
 
 $sql = "select count(*) as cnt
   from books as b
