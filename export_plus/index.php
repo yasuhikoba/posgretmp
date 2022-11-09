@@ -44,7 +44,6 @@ $itemlist = array(
   "目次",
   "内容説明",
   "公開日",
-  "同一公開日付表示順",
   "公開の状態",
   "新刊設定",
   "キーワード",
@@ -88,14 +87,12 @@ $itemlist = array(
   "著者タイプ10"
 );
 
+// UTF-8 BOM付き処理＋ヘッダー(Excelで開ける用の処理)
 $header = pack('C*',0xEF,0xBB,0xBF) . implode(",",$itemlist);
 
 header("Content-Type: application/octet-stream");
 header("Content-disposition: attachment; filename=".$publisher_key . "-" . date('Ymd') . ".csv");
 echo $header;
-
-// まずは2ページだけで様子見
-$page = 2;
 
 // 一定数ごとにループ
 for ($i=0; $i < $page; $i++) {
@@ -104,7 +101,7 @@ for ($i=0; $i < $page; $i++) {
   b.id,b.name,b.kana,b.volume,b.sub_name,b.sub_kana
   ,b.isbn,b.magazine_code,b.c_code,b.book_date,b.release_date,
   b.version,b.book_size,b.page,b.price,b.outline,
-  b.outline_abr,b.explain,b.content,b.public_date,'指定なし' as none,
+  b.outline_abr,b.explain,b.content,b.public_date,
   b.public_status,new_status,b.keyword,b.next_book,
   b.recommend_status,b.recommend_sentence,
   b.recommend_order,b.stock_status,b.cart_status
@@ -265,6 +262,9 @@ for ($i=0; $i < $page; $i++) {
       }
     }
 
+    // デフォルトのタイムゾーンを UTCへ
+    date_default_timezone_set('UTC');
+
     foreach ($row as $k => $v) {
       if($k == 'public_status') {
         if($v == '1') {
@@ -291,6 +291,74 @@ for ($i=0; $i < $page; $i++) {
           $v = 'おすすめ';
         } else {
           $v = '非おすすめ';
+        }
+      } elseif($k == 'book_size') {
+        switch ($v) {
+          case '1':
+            $v = '4-6';
+            break;
+          case '2':
+            $v = '4-6変';
+            break;
+          case '3':
+            $v = 'B6';
+            break;
+          case '4':
+            $v = 'B6変';
+            break;
+          case '5':
+            $v = 'A5';
+            break;
+          case '6':
+            $v = 'A5変';
+            break;
+          case '7':
+            $v = '文庫';
+            break;
+          case '8':
+            $v = '新書';
+            break;
+          case '9':
+            $v = 'B5';
+            break;
+          case '10':
+            $v = 'B5変';
+            break;
+          case '11':
+            $v = 'A4';
+            break;
+          case '12':
+            $v = 'A4変';
+            break;
+          case '13':
+            $v = 'A6';
+            break;
+          case '14':
+            $v = 'A6変';
+            break;
+          case '15':
+            $v = 'AB';
+            break;
+          case '16':
+            $v = 'B4';
+            break;
+          case '17':
+            $v = '菊判';
+            break;
+          case '18':
+            $v = '菊倍判';
+            break;
+          case '19':
+            $v = '菊判変';
+            break;
+          case '20':
+            $v = 'その他・規格外';
+            break;
+          case '21':
+            $v = 'B7';
+            break;
+          default:
+            $v = '';
         }
       } elseif($k == 'stock_status') {
         switch ($v) {
@@ -323,6 +391,23 @@ for ($i=0; $i < $page; $i++) {
           $v = 'カート無効';
         } else {
           $v = 'カート無効';
+        }
+      }elseif(
+        $k == 'book_date' ||
+        $k == 'release_date'
+      ) {
+        // 日付の変換処理
+        if(!empty($v)) {
+          $dt = new DateTime($v);
+          $dt->setTimeZone(new DateTimeZone('Asia/Tokyo'));
+          $v = $dt->format('Y/n/j');
+        }
+      }elseif($k == 'public_date') {
+        // 日付の変換処理
+        if(!empty($v)) {
+          $dt = new DateTime($v);
+          $dt->setTimeZone(new DateTimeZone('Asia/Tokyo'));
+          $v = $dt->format('Y/n/j H:i:s');
         }
       }
 
