@@ -9965,30 +9965,32 @@ $isbnlist = array(
 );
 
 // STG用
-$dsn = 'pgsql:dbname=dbeu4230n0kuct;host=ec2-100-26-113-127.compute-1.amazonaws.com;port=5432';
-$db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f766137b9b58d6c13109c3a1dff39');
+$dsn = 'pgsql:dbname=d32hupuj29g33c;host=ec2-44-206-11-200.compute-1.amazonaws.com;port=5432';
+$db = new PDO($dsn, 'rszgmnfrbqlgot', '237cbd5e1db3db80228bbf1483cd208c850e4d22bfd12c85b7e317b1cc569700');
 
 // // 本番用
-// $dsn = 'pgsql:dbname=dbeu4230n0kuct;host=ec2-100-26-113-127.compute-1.amazonaws.com;port=5432';
-// $db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f766137b9b58d6c13109c3a1dff39');
+// $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-233-148-141.compute-1.amazonaws.com;port=5432';
+// $db = new PDO($dsn, 'u43nqlr506q4qg', 'pd20127aa81443c772b163cc2eb6c9960b8735bb9a29528e868c86af98c8ed8ed');
 
 ob_start();
 
 $i = 0;
 foreach ($isbnlist as $k => $v) {
-  $sql = "select id,name,isbn from books where isbn = '{$v}' and publisher_id = 77;";
+  $sql = "select id,name,isbn,publisher_id from books where isbn = '{$v}' and publisher_id = 1008;";
+  // $sql = "select id,name from authors where name = '{$v}' and publisher_id = 1046;";
   foreach ($db->query($sql) as $row) {
     echo $row['isbn'];
     echo "||"; // 後で置換用の区切り文字
     echo $row['id'];
     echo "||"; // 後で置換用の区切り文字
     echo $row['name'];
+    echo "||"; // 後で置換用の区切り文字
   }
 
   echo "<br>";
   $i++;
-  if($i > 100) {
-    // 100回まわったら ページ出力
+  if($i > 20) {
+    // 20回まわったら ページ出力
     flush();
     ob_flush();
     $i = 0;

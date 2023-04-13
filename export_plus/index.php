@@ -2,14 +2,14 @@
 
 ob_start();
 
-$publisher_id = 5;
-$publisher_key = 'sho-cr'; // ファイル名で使用
-$debug = true;
+$publisher_id = 20;
+$publisher_key = 'tkd-pbl'; // ファイル名で使用
+$debug = false;
 
-if($debut) {
+if($debug) {
   // STG用
-  $dsn = 'pgsql:dbname=dbeu4230n0kuct;host=ec2-100-26-113-127.compute-1.amazonaws.com;port=5432';
-  $db = new PDO($dsn, 'bmdxjjfoahyizi', '282992d73a19e3fc0fbc6c86dab8e2e07e7f766137b9b58d6c13109c3a1dff39');
+  $dsn = 'pgsql:dbname=d32hupuj29g33c;host=ec2-44-206-11-200.compute-1.amazonaws.com;port=5432';
+  $db = new PDO($dsn, 'rszgmnfrbqlgot', '237cbd5e1db3db80228bbf1483cd208c850e4d22bfd12c85b7e317b1cc569700');
   $publisher_key .= '-stg';
 } else {
   // 本番用
