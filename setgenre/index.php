@@ -6057,6 +6057,17 @@ foreach ($datalist as $k => $v) {
       $pg = $g;
       if(($gtk + 1) == count($gt)) {
         // 中間テーブルへ レコード追加
+
+        // 既に レコードがないかチェックする
+        $sql = "select * from book_genres where book_id = {$book['id']} and genre_id = {$g['id']}";
+        $sth = $db->query($sql);
+        $bg = $sth->fetch(PDO::FETCH_ASSOC);
+        if(!empty($bg)) {
+          // 既にレコードがある場合は スキップ
+          echo "book_genre exists id {$k}<br>";
+          continue;
+        }
+
         $isql = "insert into book_genres (book_id,genre_id,created_at,updated_at) values ({$book['id']},{$g['id']},now(),now());";
         if($db->exec($isql) === false) {
           echo "not set book_genre skip book id {$k}<br>";
