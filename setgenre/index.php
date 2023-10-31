@@ -5947,16 +5947,6 @@ if($debug) {
   // $db = new PDO($dsn, 'u43nqlr506q4qg', 'pd20127aa81443c772b163cc2eb6c9960b8735bb9a29528e868c86af98c8ed8ed');
 }
 
-$sql = "select count(*) as cnt
-  from books as b
-  where b.publisher_id = {$publisher_id};";
-
-$sth = $db->query($sql);
-$row = $sth->fetch(PDO::FETCH_ASSOC);
-$count = $row['cnt'];
-$limit = 20;
-$page = ceil($count / $limit);
-
 $datacount = count($datalist);
 
 ob_start();
@@ -6081,7 +6071,7 @@ foreach ($datalist as $k => $v) {
   $roop++;
   if($i > 20) {
     // 20回まわったら ページ出力
-    echo $roop . " / " . $datacount . "<br>";
+    echo $roop . " / " . $datacount . " id:" . $k . "<br>";
     flush();
     ob_flush();
     $i = 0;
