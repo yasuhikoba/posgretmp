@@ -5930,11 +5930,14 @@ $datalist = array(
 // ！！！！！！！！！！！！！！
 // ！！！実行後は bookCountの再計算処理を実行する！！！
 // ！！！！！！！！！！！！！！
+
+// ジャンル名に ' が入っている場合は考慮できていない(setformatは考慮している)
 $publisher_id = 24;
 $debug = true;
 
 if($debug) {
   // Docker用
+  // 先に Postgres側を起動しておかないと IPが認識できず、アクセスできない
   $dsn = 'pgsql:dbname=app_development;host=172.20.254.227;port=15432';
   $db = new PDO($dsn, 'postgres', 'password');
 
