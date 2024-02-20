@@ -53,8 +53,7 @@ $itemlist = array(
   'isbn',
 );
 
-for ($i=0; $i < $page; $i++) {
-  $offset = $limit * $i;
+for ($i=0; $i <= $page; $i++) {
   $sql = "select DISTINCT
     id,
     name,
@@ -79,7 +78,7 @@ for ($i=0; $i < $page; $i++) {
 
     order by id
 
-    limit {$limit} offset {$offset}
+    limit {$limit}
     ;";
 
   // bookのループ（1行）
