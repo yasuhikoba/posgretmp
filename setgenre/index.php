@@ -220,8 +220,8 @@ if($debug) {
   // $db = new PDO($dsn, 'rszgmnfrbqlgot', '237cbd5e1db3db80228bbf1483cd208c850e4d22bfd12c85b7e317b1cc569700');
 } else {
   // 本番用
-  $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-233-148-141.compute-1.amazonaws.com;port=5432';
-  $db = new PDO($dsn, 'u43nqlr506q4qg', 'pd20127aa81443c772b163cc2eb6c9960b8735bb9a29528e868c86af98c8ed8ed');
+  $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-52-204-191-143.compute-1.amazonaws.com;port=5432';
+  $db = new PDO($dsn, 'u79urs9of0un6s', 'p34d02ab02bf28b14e66b09bc464b4b3e75840bfa9418dba10202fbe1840f91ec');
 }
 
 $datacount = count($datalist);
