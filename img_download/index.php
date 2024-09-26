@@ -1,8 +1,21 @@
 <?php
 require_once('../tools.php');
 
-// アクセスURL
-// http://localhost/img_download/
+/**
+ *
+ * アクセスURL
+ * http://localhost/img_download/
+ *
+ * ブラウザで出力されたコードで || を タブに置換して、
+ * Excelに貼り付けることで、書誌一括更新のフォーマットになる
+ *
+ * 一番右の「備考」は、一括更新には無い項目なので、削除する
+ * (書影が出力されなかった際の状況等が入る想定)
+ *
+ * ダウンロードした画像を test.hondana.jpのさくらの環境にアップロードして、
+ * パスが有効になるようにする
+ *
+ */
 
 $imghost = '';
 $adminhost = '';
@@ -11,14 +24,16 @@ $uploadhost = 'https://test.hondana.jp/';
 /**
 * 出版社ID
 */
+// $publisher_id = 1002; // テンプレート開発用1 STG
+$publisher_id = 1125; // 竹書房 本番
 // $publisher_id = 1084; // 白夜書房 本番
-$publisher_id = 1027; // 白夜書房 STG
+// $publisher_id = 1027; // 白夜書房 STG
 
 /**
 * 環境
 */
-// $env = 'pro';
-$env = 'stg';
+$env = 'pro';
+// $env = 'stg';
 // $env = 'docker';
 
 if($env == 'pro') {
@@ -66,7 +81,7 @@ echo "<br>";
 // 一定数ごとにループ
 // 途中で処理が止まってしまった場合は 下記の $i の初期値を変更して再実行させる
 // 3000件目からスタートさせる場合 3000 / 20 → 150を設定する
-for ($i=0; $i < $page; $i++) {
+for ($i=763; $i < $page; $i++) {
   $offset = $limit * $i;
   $sql = "select DISTINCT
   b.id,b.image,b.sub_images
