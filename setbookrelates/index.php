@@ -9,6 +9,12 @@ require_once('../tools.php');
  * 関連書誌を相互に紐づける
  * 書誌の存在チェック、すでに紐づいているものはスキップする
  *
+ * 事前に関連書誌のデータをチェックしておく
+ *
+ * select br.* from book_relates as br
+ * left join books as b on br.book_id = b.id
+ * where b.publisher_id = 1163;
+ *
  */
 
 $datalist = array(
@@ -655,9 +661,9 @@ $publisher_id = 1163; // 研究社 pro
 /**
 * 環境
 */
-$env = 'pro';
+// $env = 'pro';
 // $env = 'stg';
-// $env = 'docker';
+$env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
