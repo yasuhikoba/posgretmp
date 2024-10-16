@@ -2331,8 +2331,12 @@ $datalist = array(
 //       'kana' => '***',
 //       'type' => '***',
 //     ),
+//     ～～～
+//     ～～～
 //   ),
-// );
+// ),
+// ～～～
+// ～～～
 
 // $publisher_id = 1125; // 竹書房 pro
 $publisher_id = 1276; // 丸善出版 stg
@@ -2393,21 +2397,22 @@ foreach ($datalist as $k => $v) {
 
   foreach ($v['opus'] as $k1 => $v1) {
     // 前後の空白削除
-    $empty = false;
-    foreach ($v1 as $k2 => $v2) {
-      $v[$k]['opus'][$k1][$k2] = trim($v2);
-      if(empty($v[$k]['opus'][$k1][$k2])) {
-        // 空の値がある場合は その著者のひもづきをスキップ
-        $empty = true;
-        break;
-      }
-    }
-    if($empty) {
+    $v1['name'] = trim($v1['name']);
+    $v1['type'] = trim($v1['type']);
+    if(empty($v1['name']) || empty($v1['type'])) {
       // 空の値がある場合は スキップ
       echo "empty data exists bookid {$v['id']} author " . ($k1+1) . "<br>";
       flush();
       ob_flush();
       continue;
+    }
+    // 半角カタカナ、ひらがなは、全角カタカナへ変換
+    $v1['kana'] = trim(mb_convert_kana($v1['kana'], "KC"));
+    // カタカナ以外を削除
+    $v1['kana'] = preg_replace('/[^\A[ァ-ヴー]+\z]/', '', $v1['kana']);
+    if(empty($v1['kana'])) {
+      // 空の場合は半角スペースを設定
+      $v1['kana'] = ' ';
     }
 
     // authorをチェック
