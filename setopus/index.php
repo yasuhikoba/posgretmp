@@ -2649,9 +2649,7 @@ $publisher_id = 1276; // 丸善出版 stg
 $env = 'stg';
 // $env = 'docker';
 
-$db = new PDO(tools::getDsn($env),
-tools::getUser($env),
-tools::getPassword($env));
+$db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
 
 $datacount = count($datalist);
@@ -2710,7 +2708,7 @@ foreach ($datalist as $k => $v) {
     // 半角カタカナ、ひらがなは、全角カタカナへ変換
     $v1['kana'] = trim(mb_convert_kana($v1['kana'], "KC"));
     // カタカナ以外を削除
-    $v1['kana'] = preg_replace('/[^ァ-ヶー]/', '', $v1['kana']);
+    $v1['kana'] = mb_ereg_replace('[^ァ-ヶー]', '', $v1['kana']);
     if(empty($v1['kana'])) {
       // 空の場合は半角スペースを設定
       $v1['kana'] = ' ';
@@ -2777,11 +2775,6 @@ foreach ($datalist as $k => $v) {
       ob_flush();
     }
   }
-
-
-
-
-
 
   $i++;
   $roop++;
