@@ -12,6 +12,11 @@ HONDANA＋ のHeroku上のPostgreSQLへ接続し、
 
 S:\マイドライブ\hondana\_HONDANA＋\開発中のメモ\TAKESHOBO-1 【竹書房】書誌データ取り込み
 
+世界文化社でさらに完成度が上がる
+
+S:\マイドライブ\hondana\sekaibunka_世界文化社\SEKAIBUNKA_DEV-7 書誌データ関連
+
+
 項目の並び順が同じか確認は必要
 
 ## 対応の流れ
@@ -80,32 +85,43 @@ update books set release_date = (release_date - '9 hour'::interval) where publis
 update books set public_date = (public_date - '9 hour'::interval) where publisher_id = ＊＊＊ and to_char(public_date,'yyyy-mm-dd HH24:MI:SS') like ('%00:00:00');
 ```
 
+↓↓↓↓↓↓↓  
+  
+取り込み時点で9時間ずらすようにできる  
+  
+ただし、  
+20241024ではなく  
+2024/10/24  
+とする必要がある  
+「出版年月日」「書店発売日」  
+は変換する必要あり  
+
 ## 変換項目
 
 ```
 ◯判型
-           none: 0, # 未選択
-           shiroku: 1, # 4-6
-           shirokuhen: 2, # 4-6変
-           b6: 3, # B6
-           b6hen: 4, # B6変
-           a5: 5, # A5
-           a5hen: 6, # A5変
-           bunko: 7, # 文庫
-           shinsho: 8, # 新書
-           b5: 9, # B5
-           b5hen: 10, # B5変
-           a4: 11, # A4
-           a4hen: 12, # A4変
-           a6: 13, # A6
-           a6hen: 14, # A6変
-           ab: 15, # AB
-           b7: 21, # B7
-           b4: 16, # B4
-           kikuban: 17, # 菊判
-           kikubaiban: 18, # 菊倍判
-           kikubanhen: 19, # 菊判変
-           other: 20, # その他・規格外
+none: 0, # 未選択
+shiroku: 1, # 4-6
+shirokuhen: 2, # 4-6変
+b6: 3, # B6
+b6hen: 4, # B6変
+a5: 5, # A5
+a5hen: 6, # A5変
+bunko: 7, # 文庫
+shinsho: 8, # 新書
+b5: 9, # B5
+b5hen: 10, # B5変
+a4: 11, # A4
+a4hen: 12, # A4変
+a6: 13, # A6
+a6hen: 14, # A6変
+ab: 15, # AB
+b7: 21, # B7
+b4: 16, # B4
+kikuban: 17, # 菊判
+kikubaiban: 18, # 菊倍判
+kikubanhen: 19, # 菊判変
+other: 20, # その他・規格外
 
 
 ◯公開の状態
@@ -115,43 +131,54 @@ update books set public_date = (public_date - '9 hour'::interval) where publishe
 予約公開 2
 
 
-◯新刊設定
+◯在庫設定
 
+none: 0, # 未選択
+in_stock: 1, #在庫あり
+short: 2, #在庫僅少
+reprinting: 3, #重版中
+reservation: 4, #未刊・予約受付中
+out_of_stock: 5, #品切れ・重版未定
+out_of_print: 6, #絶版
+ondemand: 7, #オンデマンド制作
+
+
+◯出版年月日、書店発売日、予約公開日
+
+20241024
+↓
+2024/10/24  
+
+Excelの書式設定で、必ず「文字列」にしてから貼り付ける
+
+
+◯新刊設定
 TRUE
 FALSE
-
+→ Excelで対応
 
 ◯これから出る本設定
 
 TRUE
 FALSE
+→ Excelで対応
 
 ◯おすすめ設定
 
 TRUE
 FALSE
-
-
-◯在庫設定
-
-         none: 0, # 未選択
-         in_stock: 1, #在庫あり
-         short: 2, #在庫僅少
-         reprinting: 3, #重版中
-         reservation: 4, #未刊・予約受付中
-         out_of_stock: 5, #品切れ・重版未定
-         out_of_print: 6, #絶版
-         ondemand: 7, #オンデマンド制作
-
-
+→ Excelで対応
 
 ◯カート設定
 
 TRUE
 FALSE
+→ Excelで対応
 
 ◯電子書籍設定
 
 TRUE
 FALSE
+→ Excelで対応
+
 ```
