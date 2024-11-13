@@ -679,7 +679,7 @@ foreach ($datalist as $k => $v) {
   $mainbook = $sth->fetch(PDO::FETCH_ASSOC);
   if(empty($mainbook)) {
     // 書誌データがない場合は スキップ
-    echo "not main book data id {$k}<br>";
+    echo "!! not main book data id {$k}<br>";
     flush();
     ob_flush();
     continue;
@@ -692,7 +692,7 @@ foreach ($datalist as $k => $v) {
     $subbook = $sth->fetch(PDO::FETCH_ASSOC);
     if(empty($subbook)) {
       // 書誌データがない場合は スキップ
-      echo "not sub book data id {$k} > {$v2}<br>";
+      echo "!! not sub book data id {$k} > {$v2}<br>";
       flush();
       ob_flush();
       continue;
@@ -713,15 +713,15 @@ foreach ($datalist as $k => $v) {
       }
 
       // main > sub の関連書籍レコード 追加
-      $sql = "insert into book_relates (book_id,book_relate_book_id,display_order,created_at,updated_at) values ({$k},{$v2},{$order},now(),now())";
+      $sql = "insert into book_relates (book_id,book_relate_book_id,display_order,created_at,updated_at) values ({$k},{$v2},{$order},now(),now());";
       if($db->exec($sql) !== false) {
         echo "success id {$k} > {$v2}<br>";
       } else {
-        echo "add book_relate error id {$k} > {$v2}<br>";
+        echo "!! add book_relate error id {$k} > {$v2}<br>";
       }
     } else {
       // 存在する場合は処理しない
-      echo "exist book_relate id {$k} > {$v2}<br>";
+      echo "!! exist book_relate id {$k} > {$v2}<br>";
     }
 
     // main < sub の関連書籍レコードの存在チェック
@@ -743,11 +743,11 @@ foreach ($datalist as $k => $v) {
       if($db->exec($sql) !== false) {
         echo "success id {$k} < {$v2}<br>";
       } else {
-        echo "add book_relate error id {$k} < {$v2}<br>";
+        echo "!! add book_relate error id {$k} < {$v2}<br>";
       }
     } else {
       // 存在する場合は処理しない
-      echo "exist book_relate id {$k} < {$v2}<br>";
+      echo "!! exist book_relate id {$k} < {$v2}<br>";
     }
     flush();
     ob_flush();
