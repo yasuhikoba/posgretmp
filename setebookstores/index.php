@@ -85,7 +85,7 @@ foreach ($datalist as $bookid => $v) {
       // レコード追加
       $sql = "insert into book_ebookstores (book_id,ebookstore_id,url,public_status,created_at,updated_at) values ({$bookid},{$ebookstores[$v2["name"]]["id"]},'{$v2["url"]}',{$v2["public_status"]},now(),now());";
       if($db->exec($sql) !== false) {
-        echo "success insert id {$bookid} > {$v2}<br>";
+        echo "success insert id {$bookid} > {$v2["name"]}<br>";
       } else {
         echo "!! add book_ebookstores error id {$bookid} > {$v2["name"]}<br>";
       }
