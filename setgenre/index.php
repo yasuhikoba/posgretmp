@@ -64,10 +64,10 @@ foreach ($datalist as $k => $v) {
       $gtv = trim($gtv);
       if($gtk == 0) {
         // 1階層 登録確認
-        $sql = "select * from genres where publisher_id = {$publisher_id} and name = '{$gtv}';";
+        $sql = "select * from genres where publisher_id = {$publisher_id} and name = '{$gtv}' and depth = {$gtk};";
       } else {
         // 2階層目以降 登録確認
-        $sql = "select * from genres where publisher_id = {$publisher_id} and name = '{$gtv}' and lft > {$pg['lft']} and rgt < {$pg['rgt']};";
+        $sql = "select * from genres where publisher_id = {$publisher_id} and name = '{$gtv}' and depth = {$gtk} and lft > {$pg['lft']} and rgt < {$pg['rgt']};";
       }
       $sth = $db->query($sql);
       $g = $sth->fetch(PDO::FETCH_ASSOC);
