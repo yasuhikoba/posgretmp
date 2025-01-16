@@ -2,9 +2,9 @@
 require_once('../tools.php');
 
 $datalist = array(
-  array('mainid' => 10087378,'maintype' => 'DVD','subid' => 10093810,'subtype' => '配信'),
-  array('mainid' => 10087379,'maintype' => 'DVD','subid' => 10093811,'subtype' => '配信'),
-  array('mainid' => 10087380,'maintype' => 'DVD','subid' => 10093812,'subtype' => '配信'),
+  array('mainid' => 10123211,'maintype' => '単行本','subid' => 10123380,'subtype' => '電子書籍'),
+  array('mainid' => 10123386,'maintype' => '単行本','subid' => 10121639,'subtype' => '電子書籍'),
+  array('mainid' => 10123099,'maintype' => '単行本','subid' => 10123391,'subtype' => '電子書籍'),
 );
 
 // ↑ メインフォーマット bookID,メインフォーマットタイプ,サブフォーマット bookID,サブフォーマットタイプ
@@ -16,14 +16,15 @@ $datalist = array(
 // $publisher_id = 1125; // 竹書房 pro
 // $publisher_id = 1165; // 世界文化社 pro
 // $publisher_id = 1210; // 国際商業出版 stg
-$publisher_id = 1276; // 丸善出版 stg
+// $publisher_id = 1276; // 丸善出版 stg
+$publisher_id = 1203; // 丸善出版 pro
 
 /**
 * 環境
 */
 // $env = 'pro';
-$env = 'stg';
-// $env = 'docker';
+// $env = 'stg';
+$env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -79,7 +80,7 @@ foreach ($datalist as $k => $v) {
 
   // サブbookがフォーマット設定されていないことを確認
   if(!empty($subbook['format_group_id'])) {
-    echo "sub book is already formatted id {$v['subid']}<br>";
+    echo "!! sub book is already formatted id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
 
@@ -89,7 +90,7 @@ foreach ($datalist as $k => $v) {
     // format_groups テーブルにレコード追加
     $sql = "insert into format_groups (publisher_id,created_at,updated_at) values ({$publisher_id},now(),now())";
     if($db->exec($sql) === false) {
-      echo "add format_groups error main book id {$v['mainid']}<br>";
+      echo "!! add format_groups error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
 
@@ -99,13 +100,13 @@ foreach ($datalist as $k => $v) {
     $sth = $db->query($sql);
     $fg = $sth->fetch(PDO::FETCH_ASSOC);
     if(empty($fg['lastval'])) {
-      echo "get last id error main book id {$v['mainid']}<br>";
+      echo "!! get last id error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
     // format_group_id 設定
     $sql = "update books set format_group_id = {$fg['lastval']},updated_at = now() where id = {$v['mainid']}";
     if($db->exec($sql) === false) {
-      echo "format_group_id set error main book id {$v['mainid']}<br>";
+      echo "!! format_group_id set error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
     $format_group_id = $fg['lastval'];
@@ -125,7 +126,7 @@ foreach ($datalist as $k => $v) {
   }
   $sql = "update books set book_format = {$maintypeid},book_format_other = {$maintype_other},updated_at = now() where id = {$v['mainid']}";
   if($db->exec($sql) === false) {
-    echo "main book update error id {$v['mainid']}<br>";
+    echo "!! main book update error id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
 
@@ -141,7 +142,7 @@ foreach ($datalist as $k => $v) {
   }
   $sql = "update books set book_format = {$subtypeid},book_format_other = {$subtype_other},format_group_id = {$format_group_id},format_primary = false,updated_at = now() where id = {$v['subid']}";
   if($db->exec($sql) === false) {
-    echo "sub book update error id {$v['subid']}<br>";
+    echo "!! sub book update error id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
 

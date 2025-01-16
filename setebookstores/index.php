@@ -2,10 +2,12 @@
 require_once('../tools.php');
 
 $datalist = array(
-  10094701 => array( array( 'name' => 'Amazon Kindle', 'url' => 'http://www.amazon.co.jp/exec/obidos/ASIN/B07DNVP74X/sekaibunkacom-22', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/900117fc308936c3bb19c76e25e23d50/', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_29123737.html', 'public_status' => 1, ), array( 'name' => ' 紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-0557701', 'public_status' => 1, ), array( 'name' => 'ebookjapan', 'url' => '', 'public_status' => 1, ), array( 'name' => 'コミックシーモア', 'url' => '', 'public_status' => 1, ), array( 'name' => 'BOOK☆WALKER', 'url' => '', 'public_status' => 1, ), ),
-  10094704 => array( array( 'name' => 'Amazon Kindle', 'url' => 'http://www.amazon.co.jp/exec/obidos/ASIN/B09TZLX2CV/sekaibunkacom-22', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1175225', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_31609103.html?partnerid=sekaibunka', 'public_status' => 1, ), array( 'name' => ' 紀伊國屋書店 Kinoppy', 'url' => 'https://books.rakuten.co.jp/rk/5ef5d04cb49933369d6a7537a6ff7546/', 'public_status' => 1, ), array( 'name' => 'ebookjapan', 'url' => '', 'public_status' => 1, ), array( 'name' => 'コミックシーモア', 'url' => '', 'public_status' => 1, ), array( 'name' => 'BOOK☆WALKER', 'url' => '', 'public_status' => 1, ), ),
+  10123376 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DNS3JMQ7', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/7c1908746f593c808e1fd00ca628112b/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33877961.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039707863', 'public_status' => 1, ), ),
+  10123377 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DNS1PGZ4', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/9887cd8c3d823741a93a6c9982e6c710/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33877960.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039707862', 'public_status' => 1, ), ),
+  10123380 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DP46XJFH', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/a040d701c317301cb2d3ee394226fbe7/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33884941.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039743486', 'public_status' => 1, ), ),
 );
 
+// ★★ 既存のurlを問答無用で上書きしてしまう。なにかしら対応が必要（上記の配列で添字urlがない場合は上書きしない等）
 
 // ↑ bookID が キー。その中が書店の配列、それぞれname、url、public_status を指定
 // 10094701 => array(
@@ -31,16 +33,17 @@ $datalist = array(
 // $publisher_id = 86; // 学陽書房 pro stg
 // $publisher_id = 1125; // 竹書房 pro
 // $publisher_id = 1165; // 世界文化社 pro
-$publisher_id = 1177; // 世界文化社 stg
+// $publisher_id = 1177; // 世界文化社 stg
 // $publisher_id = 1210; // 国際商業出版 stg
 // $publisher_id = 1276; // 丸善出版 stg
+$publisher_id = 1203; // 丸善出版 pro
 
 /**
 * 環境
 */
 // $env = 'pro';
-$env = 'stg';
-// $env = 'docker';
+// $env = 'stg';
+$env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 

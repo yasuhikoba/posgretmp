@@ -5,7 +5,8 @@ ob_start();
 
 // $publisher_id = 1125; // 竹書房 pro
 // $publisher_id = 1276; // 丸善出版 stg
-$publisher_id = 1165; // 世界文化社 pro
+$publisher_id = 1203; // 丸善出版 pro
+// $publisher_id = 1165; // 世界文化社 pro
 
 /**
 * 環境

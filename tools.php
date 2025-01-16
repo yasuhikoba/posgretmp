@@ -96,7 +96,7 @@ class tools {
       $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-52-204-191-143.compute-1.amazonaws.com;port=5432';
     } elseif($env == 'stg') {
       // STG
-      $response = 'pgsql:dbname=d23slp29mn3732;host=c5lpcjces8gqje.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com;port=5432';
+      $response = 'pgsql:dbname=ddoo2bus5args;host=ec2-98-85-195-1.compute-1.amazonaws.com;port=5432';
     } else {
       // Docker
       $response = 'pgsql:dbname=app_development;host=172.20.254.227;port=15432';
@@ -118,7 +118,7 @@ class tools {
       $response = 'u79urs9of0un6s';
     } elseif($env == 'stg') {
       // STG
-      $response = 'u2k8p4293tq6sk';
+      $response = 'u7nngbeo591nrg';
     } else {
       // Docker
       $response = 'postgres';
@@ -140,7 +140,7 @@ class tools {
       $response = 'p34d02ab02bf28b14e66b09bc464b4b3e75840bfa9418dba10202fbe1840f91ec';
     } elseif($env == 'stg') {
       // STG
-      $response = 'p53c1137fc137540a98827d8bdb43b4ba05e11fba3eb8bf526398ef0ab14dbdf2';
+      $response = 'p7d56a26a9669d4853f25806216d58757cafe3806da207e1444226e84e56eef5f';
     } else {
       // Docker
       $response = 'password';
