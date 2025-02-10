@@ -18,11 +18,19 @@ require_once('../tools.php');
  */
 
 $datalist = array(
-  10123976 => array(10123954,10123957,10123956),
-  10123976 => array(10123957),
-  10123976 => array(10123956),
+  array( 10123998 => array(10123999)),
+  array( 10123999 => array(10123996)),
+  array( 10123999 => array(10123998)),
 );
 // ↑ キー 主書誌、array サブ書誌
+// 同じキーで複数行記述する場合を想定し、1行ごとにarrayで囲むように変更
+// 例）
+// array( 10123997 => array(10123994)),
+// array( 10123997 => array(10123996)),
+// array( 10123997 => array(10123998)),
+// array( 10123998 => array(10123995,10123996,10123997,10123999)),
+// array( 10123999 => array(10123996)),
+// array( 10123999 => array(10123998)),
 
 // $publisher_id = 24;
 // $publisher_id = 86; // 学陽書房 pro stg
@@ -44,7 +52,12 @@ $datacount = count($datalist);
 
 ob_start();
 
-foreach ($datalist as $k => $v) {
+foreach ($datalist as $kk => $vv) {
+  reset($vv);
+
+  $k = key($vv);
+  $v = current($vv);
+
   // 書誌の存在チェック
   $sql = "select id from books where id = '{$k}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);

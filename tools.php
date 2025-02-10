@@ -93,7 +93,7 @@ class tools {
     $response = null;
     if($env == 'pro') {
       // 本番
-      $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-52-204-191-143.compute-1.amazonaws.com;port=5432';
+      $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-13-216-20-134.compute-1.amazonaws.com;port=5432';
     } elseif($env == 'stg') {
       // STG
       $response = 'pgsql:dbname=ddoo2bus5args;host=ec2-98-85-195-1.compute-1.amazonaws.com;port=5432';
