@@ -2,9 +2,10 @@
 require_once('../tools.php');
 
 $datalist = array(
-  10123799 => '映像>医学・薬学>医学総合 | 非公開ジャンル > 媒体 > DVD|配信 | 非公開ジャンル > 媒体 > 館内視聴OK | 非公開ジャンル > 媒体 > 館内個人貸出OK | 非公開ジャンル > 媒体 > 館内団体貸出OK | 非公開ジャンル > 媒体 > 館内無償上映OK | 非公開ジャンル > 媒体 > 学外貸出OK | 非公開ジャンル > 媒体 > 対面授業利用OK | EVO',
-  10123800 => '映像>医学・薬学>医学総合 | 非公開ジャンル > 媒体 > DVD|配信 | 非公開ジャンル > 媒体 > 館内視聴OK | 非公開ジャンル > 媒体 > 館内個人貸出OK | 非公開ジャンル > 媒体 > 館内団体貸出OK | 非公開ジャンル > 媒体 > 館内無償上映OK | 非公開ジャンル > 媒体 > 学外貸出OK | 非公開ジャンル > 媒体 > 対面授業利用OK | EVO',
-  10123801 => '映像>看護学>基礎看護 | 非公開ジャンル > 媒体 > DVD|配信 | 非公開ジャンル > 媒体 > 館内視聴OK | 非公開ジャンル > 媒体 > 館内無償上映OK | 非公開ジャンル > 媒体 > 対面授業利用OK | EVO',
+  638052 => 'コミックス>ニチブンコミックス',
+  633136 => 'コミックス>ニチブンコミックス',
+  633148 => 'コミックス>ニチブンコミックス',
+
 );
 
 // ！！！！！！！！！！！！！！
@@ -12,10 +13,11 @@ $datalist = array(
 // ！！！！！！！！！！！！！！
 //
 // ジャンル名に ' が入っている場合は考慮できていない(setformatは考慮している)
+$publisher_id = 137; // 日本文芸社 pro
 // $publisher_id = 1125; // 竹書房 pro
 // $publisher_id = 1276; // 丸善出版 stg
 // $publisher_id = 1165; // 世界文化社 pro
-$publisher_id = 1203; // 丸善出版 pro
+// $publisher_id = 1203; // 丸善出版 pro
 
 /**
 * 環境
@@ -39,7 +41,7 @@ foreach ($datalist as $k => $v) {
   $book = $sth->fetch(PDO::FETCH_ASSOC);
   if(empty($book)) {
     // 書誌データがない場合は スキップ
-    echo "not book data id {$k}<br>";
+    echo "!! not book data id {$k}<br>";
     flush();
     ob_flush();
     continue;
@@ -54,7 +56,7 @@ foreach ($datalist as $k => $v) {
     $depth = count($gt);
     if($depth > 3) {
       // 4階層目以降が設定されているため エラー
-      echo "depth error book id {$k}<br>";
+      echo "!! depth error book id {$k}<br>";
       flush();
       ob_flush();
       break;
@@ -93,14 +95,14 @@ foreach ($datalist as $k => $v) {
           // 追加するスペースを用意する
           $isql = "update genres set lft = lft+2 where publisher_id = {$publisher_id} and lft >= {$pg['rgt']};";
           if($db->exec($isql) === false) {
-            echo "lft change error book id {$k}<br>";
+            echo "!! lft change error book id {$k}<br>";
             flush();
             ob_flush();
             break 2;
           }
           $isql = "update genres set rgt = rgt+2 where publisher_id = {$publisher_id} and rgt >= {$pg['rgt']};";
           if($db->exec($isql) === false) {
-            echo "rgt change error book id {$k}<br>";
+            echo "!! rgt change error book id {$k}<br>";
             flush();
             ob_flush();
             break 2;
@@ -110,7 +112,7 @@ foreach ($datalist as $k => $v) {
           $isql = "insert into genres (name,publisher_id,parent_id,lft,rgt,depth,created_at,updated_at,name_search) values ('{$gtv}',{$publisher_id},{$pg['id']},{$pg['rgt']}," . ($pg['rgt'] + 1) . ",{$gtk},now(),now(),'{$name_search}');";
         }
         if($db->exec($isql) === false) {
-          echo "not insert genre skip book id {$k}<br>";
+          echo "!! not insert genre skip book id {$k}<br>";
           flush();
           ob_flush();
           break 2;
@@ -122,7 +124,7 @@ foreach ($datalist as $k => $v) {
           $sth = $db->query($sql2);
           $pg = $sth->fetch(PDO::FETCH_ASSOC);
           if(empty($pg)) {
-            echo "not get parent genre skip book id {$k}<br>";
+            echo "!! not get parent genre skip book id {$k}<br>";
             flush();
             ob_flush();
             break 2;
@@ -132,7 +134,7 @@ foreach ($datalist as $k => $v) {
         $sth = $db->query($sql);
         $g = $sth->fetch(PDO::FETCH_ASSOC);
         if(empty($g)) {
-          echo "not get insert genre skip book id {$k}<br>";
+          echo "!! not get insert genre skip book id {$k}<br>";
           flush();
           ob_flush();
           break 2;
@@ -157,7 +159,7 @@ foreach ($datalist as $k => $v) {
 
         $isql = "insert into book_genres (book_id,genre_id,created_at,updated_at) values ({$book['id']},{$g['id']},now(),now());";
         if($db->exec($isql) === false) {
-          echo "not set book_genre skip book id {$k}<br>";
+          echo "!! not set book_genre skip book id {$k}<br>";
           flush();
           ob_flush();
           break 2;

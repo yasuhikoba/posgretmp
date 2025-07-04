@@ -2,9 +2,9 @@
 require_once('../tools.php');
 
 $datalist = array(
-  10123376 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DNS3JMQ7', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/7c1908746f593c808e1fd00ca628112b/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33877961.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039707863', 'public_status' => 1, ), ),
-  10123377 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DNS1PGZ4', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/9887cd8c3d823741a93a6c9982e6c710/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33877960.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039707862', 'public_status' => 1, ), ),
-  10123380 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DP46XJFH', 'public_status' => 1, ), array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/a040d701c317301cb2d3ee394226fbe7/?l-id=search-c-item-text-01', 'public_status' => 1, ), array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33884941.html', 'public_status' => 1, ), array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039743486', 'public_status' => 1, ), ),
+  10131460 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DPNN1149', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/73d42dbbbb913dc896b65bb3bdbc3f4d/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => '紀伊國屋書店 Kinoppy', 'url' => '', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33909342.html', 'public_status' => 1, ),array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039793292', 'public_status' => 1, ),),
+  10131467 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DQ71RNQZ', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/77793617229e36b8acd26149c2c6d7f3/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33930324.html', 'public_status' => 1, ),),
+  10131470 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DQC82VX5', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/7cac19d693443f9183395d7bbd6cd492/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => '紀伊國屋書店 Kinoppy', 'url' => '', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33951752.html', 'public_status' => 1, ),array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039803633', 'public_status' => 1, ),),
 );
 
 // ★★ 既存のurlを問答無用で上書きしてしまう。なにかしら対応が必要（上記の配列で添字urlがない場合は上書きしない等）
@@ -72,8 +72,7 @@ foreach ($datalist as $bookid => $v) {
 
   // 電子書籍書店のループ
   foreach ($v as $k2 => $v2) {
-    // 電子書籍書店名は「 紀伊國屋書店 Kinoppy」にスペースが入っているので、trimしない
-    // $v2["name"] = trim($v2["name"]);
+    $v2["name"] = trim($v2["name"]);
     $v2["url"] = trim($v2["url"]);
     if(!array_key_exists($v2["name"],$ebookstores)) {
       // 存在しない書店が設定されている
