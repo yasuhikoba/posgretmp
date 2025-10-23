@@ -96,10 +96,10 @@ class tools
     $response = null;
     if ($env == 'pro') {
       // 本番
-      $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-13-216-20-134.compute-1.amazonaws.com;port=5432';
+      $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-225-178-153.compute-1.amazonaws.com;port=5432';
     } elseif ($env == 'stg') {
       // STG
-      $response = 'pgsql:dbname=ddoo2bus5args;host=ec2-98-85-195-1.compute-1.amazonaws.com;port=5432';
+      $response = 'pgsql:dbname=ddoo2bus5args;host=ec2-52-203-145-89.compute-1.amazonaws.com;port=5432';
     } else {
       // Docker
       $response = 'pgsql:dbname=app_development;host=172.20.254.227;port=15432';
@@ -119,10 +119,10 @@ class tools
     $response = null;
     if ($env == 'pro') {
       // 本番
-      $response = 'u79urs9of0un6s';
+      $response = 'uf09811jegjc8t';
     } elseif ($env == 'stg') {
       // STG
-      $response = 'u7nngbeo591nrg';
+      $response = 'u4451lif7h60en';
     } else {
       // Docker
       $response = 'postgres';
@@ -142,10 +142,10 @@ class tools
     $response = null;
     if ($env == 'pro') {
       // 本番
-      $response = 'p34d02ab02bf28b14e66b09bc464b4b3e75840bfa9418dba10202fbe1840f91ec';
+      $response = 'p1ff5a82bcfe9d828b486f8959b8f5cdfc07cba0ac6cb87f32d16e6e5c35478e0';
     } elseif ($env == 'stg') {
       // STG
-      $response = 'p7d56a26a9669d4853f25806216d58757cafe3806da207e1444226e84e56eef5f';
+      $response = 'p48c1f10d3f99602f619492a0f5d794082741dbc222a74676dbde11d135f944a0';
     } else {
       // Docker
       $response = 'password';
