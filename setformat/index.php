@@ -1,30 +1,30 @@
-<?php
+﻿<?php
 require_once('../tools.php');
+tools::loadEnv();
 
 $datalist = array(
-  array('mainid' => 10123211,'maintype' => '単行本','subid' => 10123380,'subtype' => '電子書籍'),
-  array('mainid' => 10123386,'maintype' => '単行本','subid' => 10121639,'subtype' => '電子書籍'),
-  array('mainid' => 10123099,'maintype' => '単行本','subid' => 10123391,'subtype' => '電子書籍'),
+  array('mainid' => 427687, 'maintype' => '雑誌', 'subid' => 10160432, 'subtype' => '電子書籍'),
+  array('mainid' => 431864, 'maintype' => '雑誌', 'subid' => 10160433, 'subtype' => '電子書籍'),
+  array('mainid' => 439104, 'maintype' => '雑誌', 'subid' => 10160434, 'subtype' => '電子書籍'),
+  array('mainid' => 441098, 'maintype' => '雑誌', 'subid' => 10160435, 'subtype' => '電子書籍'),
+  array('mainid' => 451546, 'maintype' => '雑誌', 'subid' => 10160436, 'subtype' => '電子書籍'),
+  array('mainid' => 454002, 'maintype' => '雑誌', 'subid' => 10160437, 'subtype' => '電子書籍'),
+  array('mainid' => 457437, 'maintype' => '雑誌', 'subid' => 10160438, 'subtype' => '電子書籍'),
+  array('mainid' => 470597, 'maintype' => '雑誌', 'subid' => 10160439, 'subtype' => '電子書籍'),
+
 );
 
 // ↑ メインフォーマット bookID,メインフォーマットタイプ,サブフォーマット bookID,サブフォーマットタイプ
 //   array('mainid' => 10082103,'maintype' => '単行本','subid' => 635230,'subtype' => '電子書籍'),
 
-
-// $publisher_id = 24;
-// $publisher_id = 86; // 学陽書房 pro stg
-// $publisher_id = 1125; // 竹書房 pro
-// $publisher_id = 1165; // 世界文化社 pro
-// $publisher_id = 1210; // 国際商業出版 stg
-// $publisher_id = 1276; // 丸善出版 stg
-$publisher_id = 1203; // 丸善出版 pro
+$publisher_id = 98; // 大修館書店 pro stg
 
 /**
-* 環境
-*/
-// $env = 'pro';
+ * 環境
+ */
+$env = 'pro';
 // $env = 'stg';
-$env = 'docker';
+// $env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -47,13 +47,13 @@ foreach ($datalist as $k => $v) {
   $empty = false;
   foreach ($v as $k1 => $v1) {
     $v[$k1] = trim($v1);
-    if(empty($v[$k1])) {
+    if (empty($v[$k1])) {
       // 空の値がある場合は スキップ
       $empty = true;
       break;
     }
   }
-  if($empty) {
+  if ($empty) {
     // 空の値がある場合は スキップ
     echo "empty data exists id {$v['mainid']}<br>";
     continue;
@@ -63,7 +63,7 @@ foreach ($datalist as $k => $v) {
   $sql = "select id,format_group_id,format_primary,book_format,book_format_other from books where id = '{$v['mainid']}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $mainbook = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($mainbook)) {
+  if (empty($mainbook)) {
     // 書誌データがない場合は スキップ
     echo "not main book data id {$v['mainid']}<br>";
     continue;
@@ -72,24 +72,24 @@ foreach ($datalist as $k => $v) {
   $sql = "select id,format_group_id,format_primary,book_format,book_format_other from books where id = '{$v['subid']}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $subbook = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($subbook)) {
+  if (empty($subbook)) {
     // 書誌データがない場合は スキップ
     echo "not sub book data id {$v['subid']}<br>";
     continue;
   }
 
   // サブbookがフォーマット設定されていないことを確認
-  if(!empty($subbook['format_group_id'])) {
+  if (!empty($subbook['format_group_id'])) {
     echo "!! sub book is already formatted id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
 
   $format_group_id = 0;
-  if(empty($mainbook['format_group_id'])) {
+  if (empty($mainbook['format_group_id'])) {
     // メインbookが フォーマット設定されていない場合は
     // format_groups テーブルにレコード追加
     $sql = "insert into format_groups (publisher_id,created_at,updated_at) values ({$publisher_id},now(),now())";
-    if($db->exec($sql) === false) {
+    if ($db->exec($sql) === false) {
       echo "!! add format_groups error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
@@ -99,13 +99,13 @@ foreach ($datalist as $k => $v) {
     $sql = "SELECT lastval();";
     $sth = $db->query($sql);
     $fg = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($fg['lastval'])) {
+    if (empty($fg['lastval'])) {
       echo "!! get last id error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
     // format_group_id 設定
     $sql = "update books set format_group_id = {$fg['lastval']},updated_at = now() where id = {$v['mainid']}";
-    if($db->exec($sql) === false) {
+    if ($db->exec($sql) === false) {
       echo "!! format_group_id set error main book id {$v['mainid']} > {$v['subid']}<br>";
       continue;
     }
@@ -117,15 +117,15 @@ foreach ($datalist as $k => $v) {
   // main bookのフォーマットタイプ 設定
   $maintypeid = 6;
   $maintype_other = 'null';
-  if(array_key_exists($v['maintype'],$format_type_list)) {
+  if (array_key_exists($v['maintype'], $format_type_list)) {
     // フォーマットタイプIDを設定
     $maintypeid = $format_type_list[$v['maintype']];
   } else {
     // フォーマットタイプ その他を設定
-    $maintype_other = "'" . str_replace("'","''",$v['maintype']) . "'";
+    $maintype_other = "'" . str_replace("'", "''", $v['maintype']) . "'";
   }
   $sql = "update books set book_format = {$maintypeid},book_format_other = {$maintype_other},updated_at = now() where id = {$v['mainid']}";
-  if($db->exec($sql) === false) {
+  if ($db->exec($sql) === false) {
     echo "!! main book update error id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
@@ -133,15 +133,15 @@ foreach ($datalist as $k => $v) {
   // sub book 設定
   $subtypeid = 6;
   $subtype_other = 'null';
-  if(array_key_exists($v['subtype'],$format_type_list)) {
+  if (array_key_exists($v['subtype'], $format_type_list)) {
     // フォーマットタイプIDを設定
     $subtypeid = $format_type_list[$v['subtype']];
   } else {
     // フォーマットタイプ その他を設定
-    $subtype_other = "'" . str_replace("'","''",$v['subtype']) . "'";
+    $subtype_other = "'" . str_replace("'", "''", $v['subtype']) . "'";
   }
   $sql = "update books set book_format = {$subtypeid},book_format_other = {$subtype_other},format_group_id = {$format_group_id},format_primary = false,updated_at = now() where id = {$v['subid']}";
-  if($db->exec($sql) === false) {
+  if ($db->exec($sql) === false) {
     echo "!! sub book update error id {$v['mainid']} > {$v['subid']}<br>";
     continue;
   }
@@ -149,11 +149,11 @@ foreach ($datalist as $k => $v) {
   $i++;
   $roop++;
   // if($i > 20) {
-    // 20回まわったら ページ出力
-    echo $roop . " / " . $datacount . " mainid:" . $v['mainid'] . "<br>";
-    flush();
-    ob_flush();
-    $i = 0;
+  // 20回まわったら ページ出力
+  echo $roop . " / " . $datacount . " mainid:" . $v['mainid'] . "<br>";
+  flush();
+  ob_flush();
+  $i = 0;
   // }
 }
 flush();

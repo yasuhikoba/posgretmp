@@ -2,6 +2,42 @@
 class tools
 {
   /**
+   * [loadEnv]
+   * .env ファイルを読み込んで環境変数に設定する
+   * （PHPのフレームワークなしでの簡易 .env ローダー）
+   *
+   * @param [String] $path [.env ファイルのパス（省略時はこのファイルと同じディレクトリ）]
+   */
+  static function loadEnv($path = null)
+  {
+    if ($path === null) {
+      $path = __DIR__ . '/.env';
+    }
+    if (!file_exists($path)) {
+      throw new \RuntimeException('.env ファイルが見つかりません: ' . $path);
+    }
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+      // コメント行はスキップ
+      if (strpos(trim($line), '#') === 0) {
+        continue;
+      }
+      // KEY=VALUE 形式のみ処理
+      if (strpos($line, '=') === false) {
+        continue;
+      }
+      [$key, $value] = explode('=', $line, 2);
+      $key   = trim($key);
+      $value = trim($value);
+      // 既に設定済みの場合は上書きしない（実行環境の環境変数を優先）
+      if (!isset($_ENV[$key]) && getenv($key) === false) {
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+      }
+    }
+  }
+
+  /**
    * [convertSearchText]
    * あいまい検索のため、ひらがなはカタカナへ
    * 全角は半角へ、大文字は小文字へ変換
@@ -87,69 +123,45 @@ class tools
   /**
    * [getDsn]
    * PostgreSQLへの接続に必要な文字列 dsnを返す
+   * 接続情報は .env ファイルから取得します。
    *
-   * @param [String] $env [pro or stg or その他]
+   * @param [String] $env [pro or stg or docker]
    * @return [String] [dsn]
    */
   static function getDsn($env)
   {
-    $response = null;
-    if ($env == 'pro') {
-      // 本番
-      $response = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-34-225-178-153.compute-1.amazonaws.com;port=5432';
-    } elseif ($env == 'stg') {
-      // STG
-      $response = 'pgsql:dbname=ddoo2bus5args;host=ec2-52-203-145-89.compute-1.amazonaws.com;port=5432';
-    } else {
-      // Docker
-      $response = 'pgsql:dbname=app_development;host=172.20.254.227;port=15432';
-    }
-    return $response;
+    $prefix = strtoupper($env);
+    $host   = getenv("{$prefix}_DB_HOST");
+    $port   = getenv("{$prefix}_DB_PORT") ?: '5432';
+    $dbname = getenv("{$prefix}_DB_NAME");
+    return "pgsql:dbname={$dbname};host={$host};port={$port}";
   }
 
   /**
    * [getUser]
    * PostgreSQLへの接続に必要な文字列 ユーザー名を返す
+   * 接続情報は .env ファイルから取得します。
    *
-   * @param [String] $env [pro or stg or その他]
+   * @param [String] $env [pro or stg or docker]
    * @return [String] [user]
    */
   static function getUser($env)
   {
-    $response = null;
-    if ($env == 'pro') {
-      // 本番
-      $response = 'uf09811jegjc8t';
-    } elseif ($env == 'stg') {
-      // STG
-      $response = 'u4451lif7h60en';
-    } else {
-      // Docker
-      $response = 'postgres';
-    }
-    return $response;
+    $prefix = strtoupper($env);
+    return getenv("{$prefix}_DB_USER");
   }
 
   /**
    * [getPassword]
    * PostgreSQLへの接続に必要な文字列 パスワードを返す
+   * 接続情報は .env ファイルから取得します。
    *
-   * @param [String] $env [pro or stg or その他]
+   * @param [String] $env [pro or stg or docker]
    * @return [String] [password]
    */
   static function getPassword($env)
   {
-    $response = null;
-    if ($env == 'pro') {
-      // 本番
-      $response = 'p1ff5a82bcfe9d828b486f8959b8f5cdfc07cba0ac6cb87f32d16e6e5c35478e0';
-    } elseif ($env == 'stg') {
-      // STG
-      $response = 'p48c1f10d3f99602f619492a0f5d794082741dbc222a74676dbde11d135f944a0';
-    } else {
-      // Docker
-      $response = 'password';
-    }
-    return $response;
+    $prefix = strtoupper($env);
+    return getenv("{$prefix}_DB_PASSWORD");
   }
 }

@@ -1,10 +1,16 @@
-<?php
+﻿<?php
 require_once('../tools.php');
+tools::loadEnv();
 
 $datalist = array(
-  10131460 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DPNN1149', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/73d42dbbbb913dc896b65bb3bdbc3f4d/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => '紀伊國屋書店 Kinoppy', 'url' => '', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33909342.html', 'public_status' => 1, ),array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039793292', 'public_status' => 1, ),),
-  10131467 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DQ71RNQZ', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/77793617229e36b8acd26149c2c6d7f3/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33930324.html', 'public_status' => 1, ),),
-  10131470 => array(array( 'name' => 'Amazon Kindle', 'url' => 'https://www.amazon.co.jp/dp/B0DQC82VX5', 'public_status' => 1, ),array( 'name' => '楽天Kobo', 'url' => 'https://books.rakuten.co.jp/rk/7cac19d693443f9183395d7bbd6cd492/?l-id=search-c-item-text-01', 'public_status' => 1, ),array( 'name' => '紀伊國屋書店 Kinoppy', 'url' => '', 'public_status' => 1, ),array( 'name' => 'honto 電子書籍ストア', 'url' => 'https://honto.jp/ebook/pd_33951752.html', 'public_status' => 1, ),array( 'name' => 'Maruzen eBook Library', 'url' => 'https://kw.maruzen.co.jp/ims/itemDetail.html?itmCd=1039803633', 'public_status' => 1, ),),
+  10164946 => array(array('name' => 'ebookjapan', 'url' => 'https://ebookjapan.yahoo.co.jp/books/765892/', 'public_status' => 1,),),
+  10164947 => array(array('name' => 'ebookjapan', 'url' => 'https://ebookjapan.yahoo.co.jp/books/765955/', 'public_status' => 1,), array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-0431901', 'public_status' => 1,), array('name' => 'Google Play Books', 'url' => 'https://tinyurl.com/2ptzp6fs', 'public_status' => 1,),),
+  10164961 => array(array('name' => 'ebookjapan', 'url' => 'https://ebookjapan.yahoo.co.jp/books/765946/', 'public_status' => 1,),),
+  10164977 => array(array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1047198', 'public_status' => 1,),),
+  10164978 => array(array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1047199', 'public_status' => 1,),),
+  10164979 => array(array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1047200', 'public_status' => 1,),),
+  10164980 => array(array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1047201', 'public_status' => 1,),),
+  10164981 => array(array('name' => '紀伊國屋書店 Kinoppy', 'url' => 'https://www.kinokuniya.co.jp/f/dsg-08-EK-1047202', 'public_status' => 1,),),
 );
 
 // ★★ 既存のurlを問答無用で上書きしてしまう。なにかしら対応が必要（上記の配列で添字urlがない場合は上書きしない等）
@@ -36,14 +42,17 @@ $datalist = array(
 // $publisher_id = 1177; // 世界文化社 stg
 // $publisher_id = 1210; // 国際商業出版 stg
 // $publisher_id = 1276; // 丸善出版 stg
-$publisher_id = 1203; // 丸善出版 pro
+// $publisher_id = 1203; // 丸善出版 pro
+// $publisher_id = 1245; // 自由国民社 pro
+// $publisher_id = 1349; // 慶應義塾大学出版会 stg
+$publisher_id = 1280; // 慶應義塾大学出版会 pro
 
 /**
-* 環境
-*/
-// $env = 'pro';
+ * 環境
+ */
+$env = 'pro';
 // $env = 'stg';
-$env = 'docker';
+// $env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -64,7 +73,7 @@ foreach ($datalist as $bookid => $v) {
   $sql = "select id from books where id = '{$bookid}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $book = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($book)) {
+  if (empty($book)) {
     // 書誌データがない場合は スキップ
     echo "!! not book data id {$bookid}<br>";
     continue;
@@ -74,7 +83,7 @@ foreach ($datalist as $bookid => $v) {
   foreach ($v as $k2 => $v2) {
     $v2["name"] = trim($v2["name"]);
     $v2["url"] = trim($v2["url"]);
-    if(!array_key_exists($v2["name"],$ebookstores)) {
+    if (!array_key_exists($v2["name"], $ebookstores)) {
       // 存在しない書店が設定されている
       echo "!! not book data id {$bookid} not shop {$v2["name"]}<br>";
       continue;
@@ -83,10 +92,10 @@ foreach ($datalist as $bookid => $v) {
     $sql = "select * from book_ebookstores where book_id = {$bookid} and ebookstore_id = {$ebookstores[$v2["name"]]["id"]};";
     $sth = $db->query($sql);
     $book_ebookstores = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($book_ebookstores)) {
+    if (empty($book_ebookstores)) {
       // レコード追加
       $sql = "insert into book_ebookstores (book_id,ebookstore_id,url,public_status,created_at,updated_at) values ({$bookid},{$ebookstores[$v2["name"]]["id"]},'{$v2["url"]}',{$v2["public_status"]},now(),now());";
-      if($db->exec($sql) !== false) {
+      if ($db->exec($sql) !== false) {
         echo "success insert id {$bookid} > {$v2["name"]}<br>";
       } else {
         echo "!! add book_ebookstores error id {$bookid} > {$v2["name"]}<br>";
@@ -94,13 +103,12 @@ foreach ($datalist as $bookid => $v) {
     } else {
       // レコード更新
       $sql = "update book_ebookstores set url = '{$v2["url"]}',public_status = {$v2["public_status"]},updated_at = now() where id = {$book_ebookstores["id"]};";
-      if($db->exec($sql) !== false) {
+      if ($db->exec($sql) !== false) {
         echo "success update id {$bookid} > {$v2["name"]}<br>";
       } else {
         echo "!! update book_ebookstores error id {$bookid} > {$v2["name"]}<br>";
       }
     }
-
   }
 
 

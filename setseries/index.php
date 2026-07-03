@@ -1,5 +1,6 @@
-<?php
+﻿<?php
 require_once('../tools.php');
+tools::loadEnv();
 
 $datalist = array(
   638052 => '鶯谷デッドゾーン',

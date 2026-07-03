@@ -1,22 +1,25 @@
 <?php
+require_once('../tools.php');
+tools::loadEnv();
+
+
+/**
+ * 環境
+ */
+require_once('../config.php');
+
+// $env = 'pro';
+// $env = 'stg';
+$env = 'docker';
+
+$publisher_id = PUBLISHER_IDS['東京科学同人'][$env];
+
+$publisher_key = 'tkd-pbl'; // ファイル名で使用
+
+$db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
+$publisher_key .= '-' . $env;
 
 ob_start();
-
-$publisher_id = 20;
-$publisher_key = 'tkd-pbl'; // ファイル名で使用
-$debug = false;
-
-if($debug) {
-  // STG用
-  $dsn = 'pgsql:dbname=d23slp29mn3732;host=c5lpcjces8gqje.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com;port=5432';
-  $db = new PDO($dsn, 'u2k8p4293tq6sk', 'p53c1137fc137540a98827d8bdb43b4ba05e11fba3eb8bf526398ef0ab14dbdf2');
-  $publisher_key .= '-stg';
-} else {
-  // 本番用
-  $dsn = 'pgsql:dbname=d3uldjpkj3ctch;host=ec2-52-204-191-143.compute-1.amazonaws.com;port=5432';
-  $db = new PDO($dsn, 'u79urs9of0un6s', 'p34d02ab02bf28b14e66b09bc464b4b3e75840bfa9418dba10202fbe1840f91ec');
-  $publisher_key .= '-pro';
-}
 
 $sql = "select count(*) as cnt
   from books as b
@@ -94,14 +97,14 @@ $itemlist = array(
 );
 
 // UTF-8 BOM付き処理＋ヘッダー(Excelで開ける用の処理)
-$header = pack('C*',0xEF,0xBB,0xBF) . implode(",",$itemlist);
+$header = pack('C*', 0xEF, 0xBB, 0xBF) . implode(",", $itemlist);
 
 header("Content-Type: application/octet-stream");
-header("Content-disposition: attachment; filename=".$publisher_key . "-" . date('Ymd') . ".csv");
+header("Content-disposition: attachment; filename=" . $publisher_key . "-" . date('Ymd') . ".csv");
 echo $header;
 
 // 一定数ごとにループ
-for ($i=0; $i < $page; $i++) {
+for ($i = 0; $i < $page; $i++) {
   $offset = $limit * $i;
   $sql = "select DISTINCT
   b.id,b.name,b.kana,b.volume,b.sub_name,b.sub_kana
@@ -121,7 +124,7 @@ for ($i=0; $i < $page; $i++) {
 
   // bookのループ（1行）
   $sth = $db->query($sql);
-  while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+  while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     // ジャンル取得
     $sql2 = "select
     concat(case when g3.name is not null then g3.name || '>' end ,case when g2.name is not null then g2.name || '>' end , g1.name) as text
@@ -140,10 +143,10 @@ for ($i=0; $i < $page; $i++) {
 
     $text = array();
     $sth2 = $db->query($sql2);
-    while($row2 = $sth2->fetch(PDO::FETCH_ASSOC)){
+    while ($row2 = $sth2->fetch(PDO::FETCH_ASSOC)) {
       $text[] = $row2['text'];
     }
-    $row['genre'] = implode("|",$text);
+    $row['genre'] = implode("|", $text);
 
     // シリーズ取得
     $sql2 = "select
@@ -163,10 +166,10 @@ for ($i=0; $i < $page; $i++) {
 
     $text = array();
     $sth2 = $db->query($sql2);
-    while($row2 = $sth2->fetch(PDO::FETCH_ASSOC)){
+    while ($row2 = $sth2->fetch(PDO::FETCH_ASSOC)) {
       $text[] = $row2['text'];
     }
-    $row['series'] = implode("|",$text);
+    $row['series'] = implode("|", $text);
 
     // 著者データ取得
     $sql2 = "SELECT
@@ -185,85 +188,85 @@ for ($i=0; $i < $page; $i++) {
 
     $j = 0;
     $sth2 = $db->query($sql2);
-    while($row2 = $sth2->fetch(PDO::FETCH_ASSOC)){
-      $row["an".$j] = $row2['name'];
-      $row["ak".$j] = $row2['kana'];
+    while ($row2 = $sth2->fetch(PDO::FETCH_ASSOC)) {
+      $row["an" . $j] = $row2['name'];
+      $row["ak" . $j] = $row2['kana'];
       switch ($row2['type']) {
         case '1':
-          $row["at".$j] = '著';
+          $row["at" . $j] = '著';
           break;
         case '2':
-          $row["at".$j] = '訳';
+          $row["at" . $j] = '訳';
           break;
         case '3':
-          $row["at".$j] = '作';
+          $row["at" . $j] = '作';
           break;
         case '4':
-          $row["at".$j] = '原作';
+          $row["at" . $j] = '原作';
           break;
         case '5':
-          $row["at".$j] = '原案';
+          $row["at" . $j] = '原案';
           break;
         case '6':
-          $row["at".$j] = '編';
+          $row["at" . $j] = '編';
           break;
         case '7':
-          $row["at".$j] = '編著';
+          $row["at" . $j] = '編著';
           break;
         case '8':
-          $row["at".$j] = '編訳';
+          $row["at" . $j] = '編訳';
           break;
         case '9':
-          $row["at".$j] = '編注';
+          $row["at" . $j] = '編注';
           break;
         case '10':
-          $row["at".$j] = '監';
+          $row["at" . $j] = '監';
           break;
         case '11':
-          $row["at".$j] = '監訳';
+          $row["at" . $j] = '監訳';
           break;
         case '12':
-          $row["at".$j] = '文';
+          $row["at" . $j] = '文';
           break;
         case '13':
-          $row["at".$j] = '絵';
+          $row["at" . $j] = '絵';
           break;
         case '14':
-          $row["at".$j] = '画';
+          $row["at" . $j] = '画';
           break;
         case '15':
-          $row["at".$j] = '写真';
+          $row["at" . $j] = '写真';
           break;
         case '17':
-          $row["at".$j] = '脚本';
+          $row["at" . $j] = '脚本';
           break;
         case '18':
-          $row["at".$j] = '作曲';
+          $row["at" . $j] = '作曲';
           break;
         case '19':
-          $row["at".$j] = 'イラスト';
+          $row["at" . $j] = 'イラスト';
           break;
         case '20':
-          $row["at".$j] = '解説';
+          $row["at" . $j] = '解説';
           break;
         case '21':
-          $row["at".$j] = '朗読';
+          $row["at" . $j] = '朗読';
           break;
         default:
-          $row["at".$j] = $row2['type'];
+          $row["at" . $j] = $row2['type'];
       }
       $j++;
-      if($j >= 10) {
+      if ($j >= 10) {
         break;
       }
     }
 
-    if($j < 10) {
+    if ($j < 10) {
       // 空の要素を追加
       while ($j >= 10) {
-        $row["an".$j] = '';
-        $row["ak".$j] = '';
-        $row["at".$j] = '';
+        $row["an" . $j] = '';
+        $row["ak" . $j] = '';
+        $row["at" . $j] = '';
         $j++;
       }
     }
@@ -272,33 +275,33 @@ for ($i=0; $i < $page; $i++) {
     date_default_timezone_set('UTC');
 
     foreach ($row as $k => $v) {
-      if($k == 'public_status') {
-        if($v == '1') {
+      if ($k == 'public_status') {
+        if ($v == '1') {
           $v = '公開';
-        } elseif($v == '2'){
+        } elseif ($v == '2') {
           $v = '予約公開';
         } else {
           $v = '非公開';
         }
-      } elseif($k == 'new_status') {
-        if($v) {
+      } elseif ($k == 'new_status') {
+        if ($v) {
           $v = '新刊';
         } else {
           $v = '新刊ではない';
         }
-      } elseif($k == 'next_book') {
-        if($v) {
+      } elseif ($k == 'next_book') {
+        if ($v) {
           $v = 'これから出る本';
         } else {
           $v = 'これから出る本ではない';
         }
-      } elseif($k == 'recommend_status') {
-        if($v) {
+      } elseif ($k == 'recommend_status') {
+        if ($v) {
           $v = 'おすすめ';
         } else {
           $v = '非おすすめ';
         }
-      } elseif($k == 'book_size') {
+      } elseif ($k == 'book_size') {
         switch ($v) {
           case '1':
             $v = '4-6';
@@ -366,7 +369,7 @@ for ($i=0; $i < $page; $i++) {
           default:
             $v = '';
         }
-      } elseif($k == 'stock_status') {
+      } elseif ($k == 'stock_status') {
         switch ($v) {
           case '1':
             $v = '在庫あり';
@@ -392,25 +395,25 @@ for ($i=0; $i < $page; $i++) {
           default:
             $v = '';
         }
-      }elseif($k == 'cart_status') {
-        if($v) {
+      } elseif ($k == 'cart_status') {
+        if ($v) {
           $v = 'カート無効';
         } else {
           $v = 'カート無効';
         }
-      }elseif(
+      } elseif (
         $k == 'book_date' ||
         $k == 'release_date'
       ) {
         // 日付の変換処理
-        if(!empty($v)) {
+        if (!empty($v)) {
           $dt = new DateTime($v);
           $dt->setTimeZone(new DateTimeZone('Asia/Tokyo'));
           $v = $dt->format('Y/n/j');
         }
-      }elseif($k == 'public_date') {
+      } elseif ($k == 'public_date') {
         // 日付の変換処理
-        if(!empty($v)) {
+        if (!empty($v)) {
           $dt = new DateTime($v);
           $dt->setTimeZone(new DateTimeZone('Asia/Tokyo'));
           $v = $dt->format('Y/n/j H:i:s');
@@ -418,17 +421,17 @@ for ($i=0; $i < $page; $i++) {
       }
 
       // 「"」をエスケープして追加
-      if(preg_match('/"/',$v)) {
-        $v = str_replace('"','""',$v);
+      if (preg_match('/"/', $v)) {
+        $v = str_replace('"', '""', $v);
       }
-      if(preg_match('/[",\n]/',$v)) {
+      if (preg_match('/[",\n]/', $v)) {
         // 「"」で囲むパターン
         $v = '"' . $v . '"';
       }
       $row[$k] = $v;
     }
     // 出力
-    echo "\n" . implode(",",$row);
+    echo "\n" . implode(",", $row);
 
     flush();
     ob_flush();

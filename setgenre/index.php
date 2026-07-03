@@ -1,10 +1,15 @@
 <?php
 require_once('../tools.php');
+tools::loadEnv();
 
 $datalist = array(
-  638052 => 'コミックス>ニチブンコミックス',
-  633136 => 'コミックス>ニチブンコミックス',
-  633148 => 'コミックス>ニチブンコミックス',
+  510602 => '一般向け>文芸・一般・教養',
+  510603 => '一般向け>文芸・一般・教養',
+  510618 => '一般向け>単行本・御写真集|一般向け>単行本・御写真集>日本語',
+  510619 => '一般向け>単行本・御写真集|一般向け>単行本・御写真集>日本語',
+  510620 => '一般向け>単行本・御写真集>日本語|一般向け>単行本・御写真集',
+  510621 => '一般向け>単行本・御写真集|一般向け>単行本・御写真集>日本語',
+  510622 => '一般向け>単行本・御写真集>日本語|一般向け>単行本・御写真集',
 
 );
 
@@ -13,18 +18,19 @@ $datalist = array(
 // ！！！！！！！！！！！！！！
 //
 // ジャンル名に ' が入っている場合は考慮できていない(setformatは考慮している)
-$publisher_id = 137; // 日本文芸社 pro
+// $publisher_id = 137; // 日本文芸社 pro
+$publisher_id = 177; // LH陽光 stg pro
 // $publisher_id = 1125; // 竹書房 pro
 // $publisher_id = 1276; // 丸善出版 stg
 // $publisher_id = 1165; // 世界文化社 pro
 // $publisher_id = 1203; // 丸善出版 pro
 
 /**
-* 環境
-*/
-// $env = 'pro';
+ * 環境
+ */
+$env = 'pro';
 // $env = 'stg';
-$env = 'docker';
+// $env = 'docker';
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -39,7 +45,7 @@ foreach ($datalist as $k => $v) {
   $sql = "select id from books where id = '{$k}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $book = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($book)) {
+  if (empty($book)) {
     // 書誌データがない場合は スキップ
     echo "!! not book data id {$k}<br>";
     flush();
@@ -48,13 +54,13 @@ foreach ($datalist as $k => $v) {
   }
 
   // ジャンル分割
-  $genrelist = explode('|',$v);
+  $genrelist = explode('|', $v);
   foreach ($genrelist as $gk => $gv) {
     $gv = trim($gv);
     // 階層構造 分割
-    $gt = explode('>',$gv);
+    $gt = explode('>', $gv);
     $depth = count($gt);
-    if($depth > 3) {
+    if ($depth > 3) {
       // 4階層目以降が設定されているため エラー
       echo "!! depth error book id {$k}<br>";
       flush();
@@ -64,7 +70,7 @@ foreach ($datalist as $k => $v) {
     $pg = null;
     foreach ($gt as $gtk => $gtv) {
       $gtv = trim($gtv);
-      if($gtk == 0) {
+      if ($gtk == 0) {
         // 1階層 登録確認
         $sql = "select * from genres where publisher_id = {$publisher_id} and name = '{$gtv}' and depth = {$gtk};";
       } else {
@@ -73,9 +79,9 @@ foreach ($datalist as $k => $v) {
       }
       $sth = $db->query($sql);
       $g = $sth->fetch(PDO::FETCH_ASSOC);
-      if(empty($g)) {
+      if (empty($g)) {
         // ジャンルの登録が必要
-        if($gtk == 0) {
+        if ($gtk == 0) {
           // 1階層 登録
 
           // 最大のrgt値取得
@@ -83,7 +89,7 @@ foreach ($datalist as $k => $v) {
           $sth = $db->query($sql2);
           $r = $sth->fetch(PDO::FETCH_ASSOC);
           $maxlft = 0;
-          if ( !empty($r) && !empty($r['max'])) {
+          if (!empty($r) && !empty($r['max'])) {
             $maxlft = $r['max'];
           }
           $name_search = tools::convertSearchText($gtv);
@@ -94,14 +100,14 @@ foreach ($datalist as $k => $v) {
           // 既存のジャンルのlftとrgtを調整して
           // 追加するスペースを用意する
           $isql = "update genres set lft = lft+2 where publisher_id = {$publisher_id} and lft >= {$pg['rgt']};";
-          if($db->exec($isql) === false) {
+          if ($db->exec($isql) === false) {
             echo "!! lft change error book id {$k}<br>";
             flush();
             ob_flush();
             break 2;
           }
           $isql = "update genres set rgt = rgt+2 where publisher_id = {$publisher_id} and rgt >= {$pg['rgt']};";
-          if($db->exec($isql) === false) {
+          if ($db->exec($isql) === false) {
             echo "!! rgt change error book id {$k}<br>";
             flush();
             ob_flush();
@@ -111,19 +117,19 @@ foreach ($datalist as $k => $v) {
           $name_search = tools::convertSearchText($gtv);
           $isql = "insert into genres (name,publisher_id,parent_id,lft,rgt,depth,created_at,updated_at,name_search) values ('{$gtv}',{$publisher_id},{$pg['id']},{$pg['rgt']}," . ($pg['rgt'] + 1) . ",{$gtk},now(),now(),'{$name_search}');";
         }
-        if($db->exec($isql) === false) {
+        if ($db->exec($isql) === false) {
           echo "!! not insert genre skip book id {$k}<br>";
           flush();
           ob_flush();
           break 2;
         }
         // 再取得
-        if($gtk != 0) {
+        if ($gtk != 0) {
           // lft,rgt値が変わっているため、親から再取得
           $sql2 = "select * from genres where publisher_id = {$publisher_id} and id = '{$pg['id']}';";
           $sth = $db->query($sql2);
           $pg = $sth->fetch(PDO::FETCH_ASSOC);
-          if(empty($pg)) {
+          if (empty($pg)) {
             echo "!! not get parent genre skip book id {$k}<br>";
             flush();
             ob_flush();
@@ -133,7 +139,7 @@ foreach ($datalist as $k => $v) {
         }
         $sth = $db->query($sql);
         $g = $sth->fetch(PDO::FETCH_ASSOC);
-        if(empty($g)) {
+        if (empty($g)) {
           echo "!! not get insert genre skip book id {$k}<br>";
           flush();
           ob_flush();
@@ -142,14 +148,14 @@ foreach ($datalist as $k => $v) {
       }
       // 親ジャンルとして退避
       $pg = $g;
-      if(($gtk + 1) == count($gt)) {
+      if (($gtk + 1) == count($gt)) {
         // 中間テーブルへ レコード追加
 
         // 既に レコードがないかチェックする
         $sql = "select * from book_genres where book_id = {$book['id']} and genre_id = {$g['id']}";
         $sth = $db->query($sql);
         $bg = $sth->fetch(PDO::FETCH_ASSOC);
-        if(!empty($bg)) {
+        if (!empty($bg)) {
           // 既にレコードがある場合は スキップ
           echo "book_genre exists id {$k}<br>";
           flush();
@@ -158,7 +164,7 @@ foreach ($datalist as $k => $v) {
         }
 
         $isql = "insert into book_genres (book_id,genre_id,created_at,updated_at) values ({$book['id']},{$g['id']},now(),now());";
-        if($db->exec($isql) === false) {
+        if ($db->exec($isql) === false) {
           echo "!! not set book_genre skip book id {$k}<br>";
           flush();
           ob_flush();
@@ -171,11 +177,11 @@ foreach ($datalist as $k => $v) {
   $i++;
   $roop++;
   // if($i > 20) {
-    // 20回まわったら ページ出力
-    echo $roop . " / " . $datacount . " id:" . $k . "<br>";
-    flush();
-    ob_flush();
-    $i = 0;
+  // 20回まわったら ページ出力
+  echo $roop . " / " . $datacount . " id:" . $k . "<br>";
+  flush();
+  ob_flush();
+  $i = 0;
   // }
 }
 flush();

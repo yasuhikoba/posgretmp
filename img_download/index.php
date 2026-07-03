@@ -1,5 +1,6 @@
 <?php
 require_once('../tools.php');
+tools::loadEnv();
 
 /**
  *
@@ -22,25 +23,21 @@ $adminhost = '';
 $uploadhost = 'https://test.hondana.jp/';
 
 /**
-* 出版社ID
-*/
-// $publisher_id = 1002; // テンプレート開発用1 STG
-$publisher_id = 1125; // 竹書房 本番
-// $publisher_id = 1084; // 白夜書房 本番
-// $publisher_id = 1027; // 白夜書房 STG
+ * 環境
+ */
+require_once('../config.php');
 
-/**
-* 環境
-*/
-$env = 'pro';
-// $env = 'stg';
+// $env = 'pro';
+$env = 'stg';
 // $env = 'docker';
 
-if($env == 'pro') {
+$publisher_id = PUBLISHER_IDS['竹書房'][$env];
+
+if ($env == 'pro') {
   // 本番用
   $imghost = 'https://hondana-image.s3.amazonaws.com/book/';
   $adminhost = 'https://admin.hondana.jp/publisher_console/';
-} elseif($env == 'stg') {
+} elseif ($env == 'stg') {
   // STG用
   $imghost = 'https://hondana-cms-image.s3.amazonaws.com/book/';
   $adminhost = 'https://hondana-t-cms.herokuapp.com/publisher_console/';
@@ -75,13 +72,13 @@ $header = array(
   "書影6（サブ）URL",
   "備考",
 );
-echo implode($header,'||');
+echo implode('||', $header);
 echo "<br>";
 
 // 一定数ごとにループ
 // 途中で処理が止まってしまった場合は 下記の $i の初期値を変更して再実行させる
 // 3000件目からスタートさせる場合 3000 / 20 → 150を設定する
-for ($i=763; $i < $page; $i++) {
+for ($i = 763; $i < $page; $i++) {
   $offset = $limit * $i;
   $sql = "select DISTINCT
   b.id,b.image,b.sub_images
@@ -97,7 +94,7 @@ for ($i=763; $i < $page; $i++) {
 
   // bookのループ（1行）
   $sth = $db->query($sql);
-  while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+  while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     $message = '';
 
     // IDを画面出力
@@ -105,27 +102,27 @@ for ($i=763; $i < $page; $i++) {
     echo "||"; // 後で置換用の区切り文字
 
     // メイン画像の存在チェック
-    if(!empty($row['image'])) {
+    if (!empty($row['image'])) {
       $imgurl = $imghost . 'image/' . $row['id'] . '/' . $row['image'];
       $data = @file_get_contents($imgurl);
-      if(!empty($data)) {
+      if (!empty($data)) {
         // ミドルの書影がないことを確認
         $imgMurl = $imghost . 'image/' . $row['id'] . '/middle_' . $row['image'];
         $dataM = @file_get_contents($imgMurl);
-        if(empty($dataM)) {
+        if (empty($dataM)) {
           // ファイルダウンロードしてローカルに保存
           $dir = "upload/hdnp/{$publisher_id}/{$row['id']}/main/";
           if (!file_exists($dir)) {
             // ディレクトリの存在を確認
-            mkdir( $dir, 0777, true );
+            mkdir($dir, 0777, true);
           }
-          if(@file_put_contents($dir . $row['image'],$data) !== false) {
+          if (@file_put_contents($dir . $row['image'], $data) !== false) {
             echo $uploadhost . $dir . $row['image'];
           } else {
             $message .= 'メイン失敗 ';
           }
         } else {
-            $message .= 'メインミドルあり ';
+          $message .= 'メインミドルあり ';
         }
       }
     }
@@ -133,8 +130,8 @@ for ($i=763; $i < $page; $i++) {
     echo "||"; // 後で置換用の区切り文字
 
     // サブ画像の存在チェック
-    if(!empty($row['sub_images'])) {
-      $sub = trim($row['sub_images'],"[]");
+    if (!empty($row['sub_images'])) {
+      $sub = trim($row['sub_images'], "[]");
       $subs = explode(",", $sub);
       $m = 0;
       foreach ($subs as $k => $v) {
@@ -142,18 +139,18 @@ for ($i=763; $i < $page; $i++) {
         $v = trim($v, '" ');
         $imgurl = $imghost . 'sub_images/' . $row['id'] . '/' . $v;
         $data = @file_get_contents($imgurl);
-        if(!empty($data)) {
+        if (!empty($data)) {
           // ミドルの書影がないことを確認
           $imgMurl = $imghost . 'sub_images/' . $row['id'] . '/middle_' . $v;
           $dataM = @file_get_contents($imgMurl);
-          if(empty($dataM)) {
+          if (empty($dataM)) {
             // ファイルダウンロードしてローカルに保存
             $dir = "upload/hdnp/{$publisher_id}/{$row['id']}/sub/";
             if (!file_exists($dir)) {
               // ディレクトリの存在を確認
-              mkdir( $dir, 0777, true );
+              mkdir($dir, 0777, true);
             }
-            if(@file_put_contents($dir . $v,$data) !== false) {
+            if (@file_put_contents($dir . $v, $data) !== false) {
               echo $uploadhost . $dir . $v;
             } else {
               $message .= "サブ{$m}失敗 ";
@@ -165,12 +162,12 @@ for ($i=763; $i < $page; $i++) {
         echo "||"; // 後で置換用の区切り文字
       }
       // 残りの区切り文字だけ挿入
-      for ($j=$m; $j <= 5; $j++) {
+      for ($j = $m; $j <= 5; $j++) {
         echo "||"; // 後で置換用の区切り文字
       }
     } else {
       // 区切り文字だけ挿入
-      for ($j=1; $j <= 5; $j++) {
+      for ($j = 1; $j <= 5; $j++) {
         echo "||"; // 後で置換用の区切り文字
       }
     }

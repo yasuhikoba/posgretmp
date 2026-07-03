@@ -1,20 +1,19 @@
 <?php
 require_once('../tools.php');
+tools::loadEnv();
 
 ob_start();
 
-// $publisher_id = 1125; // 竹書房 pro
-// $publisher_id = 1276; // 丸善出版 stg
-// $publisher_id = 1203; // 丸善出版 pro
-$publisher_id = 1204; // 光文社 pro
-// $publisher_id = 1165; // 世界文化社 pro
-
 /**
-* 環境
-*/
+ * 環境
+ */
+require_once('../config.php');
+
 // $env = 'pro';
 // $env = 'stg';
 $env = 'docker';
+
+$publisher_id = PUBLISHER_IDS['光文社'][$env];
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -44,7 +43,7 @@ $itemlist = array(
   'isbn',
 );
 
-for ($i=0; $i <= $page; $i++) {
+for ($i = 0; $i <= $page; $i++) {
   $sql = "select DISTINCT
     id,
     name,
@@ -74,20 +73,20 @@ for ($i=0; $i <= $page; $i++) {
 
   // bookのループ（1行）
   $sth = $db->query($sql);
-  while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+  while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     $name_search = tools::convertSearchText($row['name']);
-    $name_search = str_replace("'","''",$name_search);
+    $name_search = str_replace("'", "''", $name_search);
     $freetext_search = array();
     $freetext_search[] = tools::convertSearchText($row['name']);
     foreach ($itemlist as $k => $v) {
-      if(!empty($row[$v])) {
+      if (!empty($row[$v])) {
         $freetext_search[] = tools::convertSearchText($row[$v]);
       }
     }
     $freetext_search = implode("|", $freetext_search);
-    $freetext_search = str_replace("'","''",$freetext_search);
+    $freetext_search = str_replace("'", "''", $freetext_search);
     $isql = "update books set name_search = '{$name_search}',freetext_search = '{$freetext_search}',updated_at = now() where id = {$row['id']} and publisher_id = {$publisher_id};";
-    if($db->exec($isql) === false) {
+    if ($db->exec($isql) === false) {
       echo "not update book id {$row['id']}<br>";
     } else {
       echo "update success book id {$row['id']}<br>";

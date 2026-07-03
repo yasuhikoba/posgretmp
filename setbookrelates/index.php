@@ -1,5 +1,6 @@
 <?php
 require_once('../tools.php');
+tools::loadEnv();
 
 /**
  *
@@ -18,9 +19,12 @@ require_once('../tools.php');
  */
 
 $datalist = array(
-  array( 10123998 => array(10123999)),
-  array( 10123999 => array(10123996)),
-  array( 10123999 => array(10123998)),
+  array(10161519 => array(10161522)),
+  array(10161518 => array(10161643)),
+  array(10161518 => array(10161593)),
+  array(10161518 => array(10161588)),
+  array(10161518 => array(10161553)),
+  array(10164757 => array(10163165)),
 );
 // ↑ キー 主書誌、array サブ書誌
 // 同じキーで複数行記述する場合を想定し、1行ごとにarrayで囲むように変更
@@ -32,18 +36,14 @@ $datalist = array(
 // array( 10123999 => array(10123996)),
 // array( 10123999 => array(10123998)),
 
-// $publisher_id = 24;
-// $publisher_id = 86; // 学陽書房 pro stg
-// $publisher_id = 1125; // 竹書房 pro
-// $publisher_id = 1163; // 研究社 pro
-$publisher_id = 1203; // 丸善出版 pro
-
 /**
-* 環境
-*/
+ * 環境
+ */
 $env = 'pro';
 // $env = 'stg';
 // $env = 'docker';
+
+$publisher_id = PUBLISHER_IDS['慶應義塾大学出版会'][$env];
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -62,7 +62,7 @@ foreach ($datalist as $kk => $vv) {
   $sql = "select id from books where id = '{$k}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $mainbook = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($mainbook)) {
+  if (empty($mainbook)) {
     // 書誌データがない場合は スキップ
     echo "!! not main book data id {$k}<br>";
     flush();
@@ -75,7 +75,7 @@ foreach ($datalist as $kk => $vv) {
     $sql = "select id from books where id = '{$v2}' and publisher_id = {$publisher_id};";
     $sth = $db->query($sql);
     $subbook = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($subbook)) {
+    if (empty($subbook)) {
       // 書誌データがない場合は スキップ
       echo "!! not sub book data id {$k} > {$v2}<br>";
       flush();
@@ -87,19 +87,19 @@ foreach ($datalist as $kk => $vv) {
     $sql = "select id from book_relates where book_id = '{$k}' and book_relate_book_id = {$v2};";
     $sth = $db->query($sql);
     $check = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($check)) {
+    if (empty($check)) {
       // 並び順を取得
       $order = 1;
       $sql = "select max(display_order) as maxorder from book_relates where book_id = '{$k}';";
       $sth = $db->query($sql);
       $max = $sth->fetch(PDO::FETCH_ASSOC);
-      if(!empty($max)) {
+      if (!empty($max)) {
         $order = intval($max['maxorder']) + 1;
       }
 
       // main > sub の関連書籍レコード 追加
       $sql = "insert into book_relates (book_id,book_relate_book_id,display_order,created_at,updated_at) values ({$k},{$v2},{$order},now(),now());";
-      if($db->exec($sql) !== false) {
+      if ($db->exec($sql) !== false) {
         echo "success id {$k} > {$v2}<br>";
       } else {
         echo "!! add book_relate error id {$k} > {$v2}<br>";
@@ -113,19 +113,19 @@ foreach ($datalist as $kk => $vv) {
     $sql = "select id from book_relates where book_id = '{$v2}' and book_relate_book_id = {$k};";
     $sth = $db->query($sql);
     $check = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($check)) {
+    if (empty($check)) {
       // 並び順を取得
       $order = 1;
       $sql = "select max(display_order) as maxorder from book_relates where book_id = '{$v2}';";
       $sth = $db->query($sql);
       $max = $sth->fetch(PDO::FETCH_ASSOC);
-      if(!empty($max)) {
+      if (!empty($max)) {
         $order = intval($max['maxorder']) + 1;
       }
 
       // main < sub の関連書籍レコード 追加
       $sql = "insert into book_relates (book_id,book_relate_book_id,display_order,created_at,updated_at) values ({$v2},{$k},{$order},now(),now())";
-      if($db->exec($sql) !== false) {
+      if ($db->exec($sql) !== false) {
         echo "success id {$k} < {$v2}<br>";
       } else {
         echo "!! add book_relate error id {$k} < {$v2}<br>";

@@ -1,5 +1,6 @@
 <?php
 require_once('../tools.php');
+tools::loadEnv();
 
 // S:\マイドライブ\hondana\sekaibunka_世界文化社\SEKAIBUNKA_DEV-7 書誌データ関連
 // のExcelで著者の配列を作った後、下記の正規表現でヒットした行を削除する
@@ -12,11 +13,10 @@ require_once('../tools.php');
 //
 // "array( でも検索して、対応する
 $datalist = array(
-array( 'id' => 10106855, 'opus' => array(array( 'name' => '水口 博也', 'kana' => 'ミナクチ ヒロヤ', 'type' => '編著', 'author_profile' => "1953年、大阪生まれ。京都大学理学部動物学科卒業後、出版社にて自然科学系の書籍編集に従事。1984年独立し、世界の各地で海洋生物を中心に撮影を続け、多くの著書、写真集を発表。近年は気候変動との関連で極地の取材も多い。1991年、講談社出版文化賞写真集賞。2000年、第5回日本絵本大賞受賞。著書に『黄昏 In the Twilight』（創元社）、『世界で一番美しいシャチ図鑑』『世界で一番美しいペンギン図鑑』『世界で一番美しい野生ネコ図鑑』（誠文堂新光社）、『職業としての写真家』『地球の風景をモノクロームで眺めたら』（シータス）など多数。" ),),),
-array( 'id' => 10106854, 'opus' => array(array( 'name' => '高安 篤史', 'kana' => 'タカヤス アツシ', 'type' => '著', 'author_profile' => "【著者略歴】<br>高安篤史（たかやす・あつし）<br>合同会社コンサランス代表、中小企業診断士。早稲田大学理工学部工業経営学科（現・経営システム工学科）卒業後、大手電機メーカーで20年以上にわたり組み込みソフトウェア開発に携わり、プロジェクトマネジャー、開発部長を歴任する。現在は、IoTに関連するコンサルタント、研修講師として活動中。情報処理技術者（プロジェクトマネジャー、応用情報技術者、セキュリティマネジメント）、IoT検定制度委員会メンバー（委員会主査）。著書に『知識ゼロからのIoT入門』（幻冬舎）など。" ),),),
-array( 'id' => 10106856, 'opus' => array(array( 'name' => '岡本 早織', 'kana' => 'オカモト サオリ', 'type' => '訳', 'author_profile' => "1993年、大阪生まれ。中学時代をベルギーのインターナショナルスクールで過ごす。国際基督教大学を卒業し、現在は実務翻訳者。2014年から、「TOKYO+MADE (Humans of Tokyo)」というインタビューサイトの翻訳を担当。2019年から、日本における婚姻の平等（同性婚の法制化）の実現を目指すMarriage For All Japanを内部で翻訳・通訳などにより支援。訳書に『国際化の時代に生きるためのＱ＆Ａ②ジェンダーってなんのこと？』（創元社）がある。" ),),),
-array( 'id' => 10106858, 'opus' => array(array( 'name' => '齋藤 眞', 'kana' => 'サイトウ マコト', 'type' => '著', 'author_profile' => "齋藤眞（さいとう・まこと）<br>1963年生まれ。1992年京都大学大学院教育学研究科博士後期課程単位取得満期退学。京都大学博士（教育学）。ユング派分析家、臨床心理士、公認心理師。愛知教育大学教育学部准教授を経て、現在、愛知学院大学心身科学部（2022年心理学部開設予定）教授。専門は臨床心理学、心理療法論。著書に『現代青年の理解の仕方――発達臨床心理学的視点から』（ナカニシヤ出版，1998年，共著）、主な論文に「『田螺長者』の心理学的解釈」（愛知教育大学研究報告（教育科学），50，115-124．2001年）、「箱庭療法と身体性」（精神療法，28（2），176-182．2002年）、「箱庭療法の背景思想をめぐって――『見えない微細な身体』を手がかりとして」（プシケー，24，76-99．2005年）、訳書にJ・レイヤード『ケルトの探求』（人文書院，1994年，共訳）などがある。" ),),),
-array( 'id' => 10106857, 'opus' => array(array( 'name' => '瀧口 俊子', 'kana' => 'タキグチ トシコ', 'type' => '編著', 'author_profile' => "立教大学大学院文学研究科修了・京都大学研修員。臨床心理士・指導スピリチュアルケア師。京都文教大学教授・放送大学大学院教授を経て現在は放送大学名誉教授。病院心理臨床・私設心理臨床・教育（保育）心理臨床などに従事。日本スピリチュアルケア学会副理事長・資格認定委員会委員長、日本臨床宗教師会副会長・倫理委員会委員長、日本遊戯療法学会監事、日本心理臨床学会代議員、日本臨床心理士会代議員、日本メンタルヘルス学会評議員、日本臨床心理士資格認定協会顧問、臨床心理士子育て支援合同委員会委員。日本心理臨床学会学会賞受賞。『精神療法』『臨床心理学』編集同人。おもな著書『子どもと生きる心理学』（法蔵館）、『真実を求めて』（聖公会出版）、『夢との対話』（トランスビュー）など。企画・監にＤＶＤ「スピリチュアルケアを学ぶ vol．１ 医療とスピリチュアルケア」（出演：日野原重明）。" ),array( 'name' => '大村 哲夫', 'kana' => 'オホムラ テツヲ', 'type' => '編著', 'author_profile' => "東北大学大学院文学研究科修了，博士（文学）。臨床心理士・指導スピリチュアルケア師・臨床宗教師。現在、東北大学大学院文学研究科准教授。指定国立大学災害科学世界トップレベル研究拠点コアメンバー。宗教心理学・死生学、グァテマラ・マヤ民族のフィールドワーク、在宅緩和ケア・教育心理臨床などに従事。日本スピリチュアルケア学会理事、日本臨床宗教師会理事、日本宗教学会評議員、印度学宗教学会評議員。日本心理臨床学会、日本心理学会、日本箱庭療法学会、日本民俗学会等会員。おもな著書に『心理臨床とセラピストの人生』（共編著、創元社）、『宗教を心理学する』（共著、誠信書房）、The Empirical Study of The Psychology of Religion and Spirituality in Japan（日本における宗教とスピリチュアリテイに関する実証的研究）, 2020, Elm Grove Publishing, Texas, U.S.（共著）。" ),array( 'name' => '和田 信', 'kana' => 'ワダ マコト', 'type' => '編著', 'author_profile' => "京都大学医学部医学科卒業。医師。現在、大阪国際がんセンター心療・緩和科部長。がんを患う人の心の診療に従事。精神腫瘍学（サイコオンコロジー）、精神病理学、精神医学。日本スピリチュアルケア学会出版委員、日本サイコオンコロジー学会理事、日本精神病理学会評議員・編集委員、日本癌治療学会制吐薬適正使用ガイドライン改訂委員、日本がん治療認定医機構教育委員、日独文化研究所理事・編集委員、World Psychiatric Association (WPA), Member of Section Clinical Psychopathology （世界精神医学会 臨床精神病理学委員）。主な著書に『共同研究 共生――そのエトス、パトス、ロゴス』（共編著、こぶし書房）。主な訳書にＷ・ブランケンブルク『目立たぬものの精神病理』（共訳、みすず書房）。" ),array( 'name' => '柏木 哲夫', 'kana' => 'カシワギ テツオ', 'type' => '著', 'author_profile' => "大阪大学医学部卒。精神科医として阪大病院勤務。ワシントン大学精神科留学。帰国後、淀川キリスト教病院に精神科設立。内科研修後ホスピス設立。名誉ホスピス長、金城学院大学学長。淀川キリスト教病院理事長。ホスピス財団理事長。日本スピリチュアルケア学会理事長。日米医学功労賞、朝日社会福祉賞、保健文化賞、ヘルシー・ソサイティ賞受賞。" ),array( 'name' => '岸本 寛史', 'kana' => 'キシモト ノリフミ', 'type' => '著', 'author_profile' => "一九九一年京都大学医学部卒業。二〇〇四年富山大学保健管理センター助教授。二〇〇七年京都大学医学部附属病院准教授。現在、静岡県立総合病院緩和医療科部長。著書に『迷走する緩和ケア』（誠信書房）、『せん妄の緩和ケア』(誠信書房)など、翻訳書にマーク・ソームズ『意識はどこから生まれてくるのか』（共訳、青土社）などがある。" ),array( 'name' => '沼口 諭', 'kana' => 'ヌマグチ サトシ', 'type' => '著', 'author_profile' => "岐阜大学医学部卒業、同大学院医学研究科博士課程修了。現在、医療法人徳養会沼口医院・理事長。大垣市医師会会長。外来診療、在宅医療を通して終末期のスピリチュアルケアに携わる。日本臨床宗教師会理事、中部臨床宗教師会顧問。日本在宅ホスピス協会役員。岐阜大学医学部非常勤講師、愛知学院大学非常勤講師。真宗大谷派德養寺・衆徒。" ),array( 'name' => '藤腹 明子', 'kana' => 'フジハラ アキコ', 'type' => '著', 'author_profile' => "国立京都病院附属高等看護学院、佛教大学文学部佛教学科卒業。京都大学医療技術短期大学部准教授、飯田女子短期大学教授などを経て、現在は淑徳大学客員教授。日本仏教看護・ビハーラ学会名誉会長。おもな著書に『仏教と看護』『仏教看護論』『仏教看護の実際』（いずれも三輪書店）、『看取りの心得と作法17カ条』『死を迎える日のための心得と作法17カ条』『母に学ぶ 家族介護の心得と作法13カ条』（いずれも青海社）ほか。" ),array( 'name' => '田村 恵子', 'kana' => 'タムラ ケイコ', 'type' => '著', 'author_profile' => "大阪大学大学院医学系研究科修了、博士（医学）。がん看護専門看護師。現在、京都大学大学院医学研究科緩和ケア看護学分野教授。がんを患う人や家族に対する緩和ケア看護の教育・臨床・研究に従事。日本緩和医療学会副理事長、日本ホスピス緩和ケア協会副理事長など。おもな著書に『系統看護学講座 別巻 緩和ケア』（共著、医学書院）、『看護に活かすスピリチュアルケアの手引き』（共著、青海社）。" ),array( 'name' => '島薗 進', 'kana' => 'シマゾノ ススム', 'type' => '著', 'author_profile' => "東京大学大学院人文科学研究科博士課程・単位取得退学。東京大学大学院人文社会系研究科・教授を経て、上智大学グリーフケア研究所所長。専門は近代日本宗教史、宗教理論、死生学、生命倫理。著書に『日本人の死生観を読む』『ともに悲嘆を生きる』（ともに朝日新聞出版）、『いのちを〝つくって〟もいいですか？』（ＮＨＫ出版）、『グリーフケアの時代』（共著、弘文堂）など。" ),array( 'name' => '窪寺 俊之', 'kana' => 'クボテラ トシユキ', 'type' => '著', 'author_profile' => "一九三九年生。現在、兵庫大学看護学研究科特任教授。埼玉大学、東京都立大学大学院に学ぶ。米国エモリー大学神学部、コロンビア神学大学大学院修了。博士（大阪大学）。米国リッチモンド記念病院と大阪の淀川キリスト教病院のチャプレン。著書に『スピリチュアルケア入門』『スピリチュアルケア学序説』（ともに三輪書店）、『スピリチュアルケア研究』（聖学院大学出版会）、『死とスピリチュアルケア論考』（関西学院大学出版会）など。日本スピリチュアルケア学会理事、日本臨床死生学会理事。" ),array( 'name' => '葛西 賢太', 'kana' => 'カサイ ケンタ', 'type' => '著', 'author_profile' => "東京大学大学院人文社会系研究科基礎文化専攻（宗教学）修了、博士（文学）。上智大学グリーフケア研究所特任准教授。おもな著書に『断酒が作り出す共同性』（世界思想社）、『現代瞑想論』（春秋社）、編著に『ケアとしての宗教』（明石書店）、訳書に『アルコホーリクス・アノニマスの歴史』（共訳、明石書店）など。" ),array( 'name' => '鈴木 岩弓', 'kana' => 'スズキ イワユミ', 'type' => '著', 'author_profile' => "東北大学大学院文学研究科博士後期課程退学。島根大学助教授、東北大学大学院文学研究科教授などを経て、現在は東北大学名誉教授、同総長特命教授。専門は宗教民俗学・死生学。日本スピリチュアルケア学会業務執行理事、日本宗教学会常務理事、日本民俗学会前会長。おもな共編著に『変容する死の文化』（東京大学出版会）、『現代日本の葬送と墓制』（吉川弘文館）。" ),array( 'name' => '鎌田 東二', 'kana' => 'カマタ トウジ', 'type' => '著', 'author_profile' => "一九五一年徳島県生れ。國學院大學大学院文学研究科博士課程単位取得満期退学。岡山大学大学院医歯学総合研究科博士課程単位取得退学。現在、上智大学大学院実践宗教学研究科特任教授。京都大学名誉教授。博士（文学・筑波大学）。著書に『神界のフィールドワーク』（筑摩書房）、『古事記ワンダーランド』（ＫＡＤＯＫＡＷＡ）、『世阿弥』『言霊の思想』（ともに青土社）など。" ),array( 'name' => '西平 直', 'kana' => 'ニシヒラ タダシ', 'type' => '著', 'author_profile' => "東京大学大学院教育学研究科修了。現在、京都大学大学院教育学研究科・教授。専門は、教育人間学、死生学、哲学。おもな著書に『無心のダイナミズム』（岩波書店）、『エリクソンの人間学』『魂のライフサイクル』『ライフサイクルの哲学』（いずれも東京大学出版会）、『稽古の思想』『修養の思想』『養生の思想』（いずれも春秋社）など。" ),array( 'name' => '松田 真理子', 'kana' => 'マツダ マリコ', 'type' => '著', 'author_profile' => "早稲田大学第一文学部卒業後、三菱商事株式会社、西村総合法律事務所勤務を経て、京都文教大学大学院博士後期課程修了、博士（臨床心理学）。臨床心理士・公認心理師・指導スピリチュアルケア師。京都文教大学臨床心理学部教授・大学院臨床心理学研究科教授。専門領域は医療心理学、臨床心理学、病跡学。日本病跡学会理事、日本スピリチュアルケア学会理事。おもな著書に『医療心理学を考える』『芸術と文学の精神世界』（ともに晃洋書房）など。" ),array( 'name' => '谷山 洋三', 'kana' => 'タニヤマ ヨウゾウ', 'type' => '著', 'author_profile' => "東北大学大学院文学研究科修了、博士（文学）。指導スピリチュアルケア師・臨床宗教師。現在、東北大学大学院文学研究科教授。臨床死生学、実践宗教学。日本スピリチュアルケア学会理事、日本仏教看護・ビハーラ学会理事、日本臨床宗教師会事務局長、臨床スピリチュアルケア協会代表。おもな著書に『医療者と宗教者のためのスピリチュアルケア』（中外医学社）。" ),array( 'name' => '高木 慶子', 'kana' => 'タカキ ヨシコ', 'type' => '著', 'author_profile' => "聖心女子大学文学部心理学科卒、上智大学大学院神学研究科博士前期課程修了、博士（宗教文化）。上智大学グリーフケア研究所名誉所長、生と死を考える会全国協議会会長。国土交通省「公共交通における事故発生時の被害者支援のあり方検討会」委員、事故被害者アドバイザー。援助修道会会員。おもな著書に『それでも人は生かされている』（ＰＨＰ研究所）、『喪失体験と悲嘆』（医学書院）、『悲しんでいい』（ＮＨＫ出版）など。" ),),),
+  array('id' => 10162247, 'opus' => array(array('name' => 'G.シャンツ', 'kana' => 'G.シャンツ', 'type' => '　', 'author_profile' => null,), array('name' => '小島三郎', 'kana' => 'コジマサブロウ', 'type' => '編', 'author_profile' => null,),),),
+  array('id' => 10162297, 'opus' => array(array('name' => '中村勝範', 'kana' => '　', 'type' => '編', 'author_profile' => null,),),),
+  array('id' => 10162359, 'opus' => array(array('name' => '周暁燕', 'kana' => '　', 'type' => '著', 'author_profile' => null,),),),
+  array('id' => 10162459, 'opus' => array(array('name' => '苗村憲司', 'kana' => 'ナエムラケンジ', 'type' => '編著', 'author_profile' => null,), array('name' => '小宮山宏之', 'kana' => 'コミヤマヒロユキ', 'type' => '　', 'author_profile' => null,),),),
 );
 
 // ↑↑↑↑↑
@@ -38,18 +38,16 @@ array( 'id' => 10106857, 'opus' => array(array( 'name' => '瀧口 俊子', 'kana
 // author_profile に設定する値は " を \"に置換した上で設定する
 // 処理途中で ' を ''、\" を " にする処理を入れる
 
-// $publisher_id = 1125; // 竹書房 pro
-// $publisher_id = 1276; // 丸善出版 stg
-// $publisher_id = 1203; // 丸善出版 pro
-// $publisher_id = 1165; // 世界文化社 pro
-$publisher_id = 1313; // 創元社 stg
-
 /**
-* 環境
-*/
+ * 環境
+ */
+require_once('../config.php');
+
 // $env = 'pro';
 $env = 'stg';
 // $env = 'docker';
+
+$publisher_id = PUBLISHER_IDS['慶應義塾大学出版会'][$env];
 
 $db = new PDO(tools::getDsn($env), tools::getUser($env), tools::getPassword($env));
 
@@ -59,26 +57,26 @@ $datacount = count($datalist);
 ob_start();
 
 $type_list = array(
-  "著" => array('id' => 1,'role' => 'A01'),
-  "訳" => array('id' => 2,'role' => 'B06'),
-  "作" => array('id' => 3,'role' => 'A01'),
-  "原作" => array('id' => 4,'role' => 'A10'),
-  "原案" => array('id' => 5,'role' => 'A10'),
-  "編" => array('id' => 6,'role' => 'B01'),
-  "編著" => array('id' => 7,'role' => 'B01'),
-  "編訳" => array('id' => 8,'role' => 'B01'),
-  "編注" => array('id' => 9,'role' => 'B01'),
-  "監" => array('id' => 10,'role' => 'B20'),
-  "監訳" => array('id' => 11,'role' => 'B20'),
-  "文" => array('id' => 12,'role' => 'A01'),
-  "絵" => array('id' => 13,'role' => 'A12'),
-  "画" => array('id' => 14,'role' => 'A12'),
-  "写真" => array('id' => 15,'role' => 'A08'),
-  "脚本" => array('id' => 17,'role' => 'A03'),
-  "作曲" => array('id' => 18,'role' => 'A06'),
-  "イラスト" => array('id' => 19,'role' => 'A12'),
-  "解説" => array('id' => 20,'role' => 'A21'),
-  "朗読" => array('id' => 21,'role' => 'E07'),
+  "著" => array('id' => 1, 'role' => 'A01'),
+  "訳" => array('id' => 2, 'role' => 'B06'),
+  "作" => array('id' => 3, 'role' => 'A01'),
+  "原作" => array('id' => 4, 'role' => 'A10'),
+  "原案" => array('id' => 5, 'role' => 'A10'),
+  "編" => array('id' => 6, 'role' => 'B01'),
+  "編著" => array('id' => 7, 'role' => 'B01'),
+  "編訳" => array('id' => 8, 'role' => 'B01'),
+  "編注" => array('id' => 9, 'role' => 'B01'),
+  "監" => array('id' => 10, 'role' => 'B20'),
+  "監訳" => array('id' => 11, 'role' => 'B20'),
+  "文" => array('id' => 12, 'role' => 'A01'),
+  "絵" => array('id' => 13, 'role' => 'A12'),
+  "画" => array('id' => 14, 'role' => 'A12'),
+  "写真" => array('id' => 15, 'role' => 'A08'),
+  "脚本" => array('id' => 17, 'role' => 'A03'),
+  "作曲" => array('id' => 18, 'role' => 'A06'),
+  "イラスト" => array('id' => 19, 'role' => 'A12'),
+  "解説" => array('id' => 20, 'role' => 'A21'),
+  "朗読" => array('id' => 21, 'role' => 'E07'),
 );
 
 $i = 0;
@@ -88,7 +86,7 @@ foreach ($datalist as $k => $v) {
   $sql = "select id from books where id = '{$v['id']}' and publisher_id = {$publisher_id};";
   $sth = $db->query($sql);
   $book = $sth->fetch(PDO::FETCH_ASSOC);
-  if(empty($book)) {
+  if (empty($book)) {
     // 書誌データがない場合は スキップ
     echo "not book data id {$v['id']}<br>";
     flush();
@@ -100,9 +98,9 @@ foreach ($datalist as $k => $v) {
     // 前後の空白削除
     $v1['name'] = trim($v1['name']);
     $v1['type'] = trim($v1['type']);
-    if(empty($v1['name']) || empty($v1['type'])) {
+    if (empty($v1['name']) || empty($v1['type'])) {
       // 空の値がある場合は スキップ
-      echo "empty data exists bookid {$v['id']} author " . ($k1+1) . "<br>";
+      echo "empty data exists bookid {$v['id']} author " . ($k1 + 1) . "<br>";
       flush();
       ob_flush();
       continue;
@@ -111,7 +109,7 @@ foreach ($datalist as $k => $v) {
     $v1['kana'] = trim(mb_convert_kana($v1['kana'], "KC"));
     // カタカナ以外を削除
     $v1['kana'] = mb_ereg_replace('[^ァ-ヶー]', '', $v1['kana']);
-    if(empty($v1['kana'])) {
+    if (empty($v1['kana'])) {
       // 空の場合は半角スペースを設定
       $v1['kana'] = ' ';
     }
@@ -121,7 +119,7 @@ foreach ($datalist as $k => $v) {
     $sth = $db->query($sql);
     $author = $sth->fetch(PDO::FETCH_ASSOC);
 
-    if(empty($author)) {
+    if (empty($author)) {
       // 著者の登録が必要
 
       // 検索用カラムの対応
@@ -130,8 +128,8 @@ foreach ($datalist as $k => $v) {
 
       $isql = "insert into authors (name,kana,publisher_id,name_search,namekana_search,created_at,updated_at) values ('{$v1['name']}','{$v1['kana']}',{$publisher_id},'{$name_search}','{$namekana_search}',now(),now());";
 
-      if($db->exec($isql) === false) {
-        echo "not insert author skip book id {$v['id']} author " . ($k1+1) . "{$isql}<br>";
+      if ($db->exec($isql) === false) {
+        echo "not insert author skip book id {$v['id']} author " . ($k1 + 1) . "{$isql}<br>";
         flush();
         ob_flush();
         continue;
@@ -139,8 +137,8 @@ foreach ($datalist as $k => $v) {
       // 再取得
       $sth = $db->query($sql);
       $author = $sth->fetch(PDO::FETCH_ASSOC);
-      if(empty($author)) {
-        echo "not get insert author skip book id {$v['id']} author " . ($k1+1) . "<br>";
+      if (empty($author)) {
+        echo "not get insert author skip book id {$v['id']} author " . ($k1 + 1) . "<br>";
         flush();
         ob_flush();
         continue;
@@ -151,12 +149,12 @@ foreach ($datalist as $k => $v) {
     $sql = "select * from opuses where book_id = {$v['id']} and author_id = {$author['id']};";
     $sth = $db->query($sql);
     $opus = $sth->fetch(PDO::FETCH_ASSOC);
-    if(empty($opus)) {
+    if (empty($opus)) {
       // 著者タイプの確認
       $type_id = 16; // その他
       $type_other = "null";
       $role = "A01"; // 著
-      if(array_key_exists($v1['type'],$type_list)) {
+      if (array_key_exists($v1['type'], $type_list)) {
         $type_id = $type_list[$v1['type']]['id'];
         $role = $type_list[$v1['type']]['role'];
       } else {
@@ -165,26 +163,26 @@ foreach ($datalist as $k => $v) {
       }
 
       $isql = '';
-      if(empty($v1['author_profile'])) {
+      if (empty($v1['author_profile'])) {
         // 著者プロフィールなし
         $isql = "insert into opuses (book_id,author_id,author_type,author_type_other,contributor_role,created_at,updated_at) values ({$v['id']},{$author['id']},{$type_id},{$type_other},'{$role}',now(),now());";
       } else {
         // 著者プロフィールあり
 
         // ' のエスケープ
-        $v1['author_profile'] = str_replace("'","''",$v1['author_profile']);
-        $v1['author_profile'] = str_replace('\"','"',$v1['author_profile']);
+        $v1['author_profile'] = str_replace("'", "''", $v1['author_profile']);
+        $v1['author_profile'] = str_replace('\"', '"', $v1['author_profile']);
         $isql = "insert into opuses (book_id,author_id,author_type,author_type_other,contributor_role,author_profile,created_at,updated_at) values ({$v['id']},{$author['id']},{$type_id},{$type_other},'{$role}','{$v1['author_profile']}',now(),now());";
       }
-      if($db->exec($isql) === false) {
-        echo "not insert author skip book id {$v['id']} author " . ($k1+1) . "<br>";
+      if ($db->exec($isql) === false) {
+        echo "not insert author skip book id {$v['id']} author " . ($k1 + 1) . "<br>";
         flush();
         ob_flush();
         continue;
       }
     } else {
       // すでにopusesレコードがある
-      echo "opuses data is existing. book id {$v['id']} author " . ($k1+1) . "<br>";
+      echo "opuses data is existing. book id {$v['id']} author " . ($k1 + 1) . "<br>";
       flush();
       ob_flush();
     }
@@ -193,11 +191,11 @@ foreach ($datalist as $k => $v) {
   $i++;
   $roop++;
   // if($i > 20) {
-    // 20回まわったら ページ出力
-    echo $roop . " / " . $datacount . " id:" . $v['id'] . "<br>";
-    flush();
-    ob_flush();
-    $i = 0;
+  // 20回まわったら ページ出力
+  echo $roop . " / " . $datacount . " id:" . $v['id'] . "<br>";
+  flush();
+  ob_flush();
+  $i = 0;
   // }
 }
 flush();
@@ -207,5 +205,3 @@ ob_end_flush();
 
 echo "end!!";
 exit();
-
-?>
